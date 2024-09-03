@@ -1,13 +1,19 @@
+// src/views/examples/Login.jsx
 import React from 'react';
 import { Button, Card, CardHeader, CardBody, FormGroup, Form, Input, InputGroupAddon, InputGroupText, InputGroup, Row, Col } from 'reactstrap';
-import { useNavigate } from 'react-router-dom'; // useNavigate 훅을 임포트합니다.
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
-  const navigate = useNavigate(); // useNavigate 훅을 사용하여 navigate 함수 생성합니다.
+  const navigate = useNavigate();
 
-  // "Create new account" 클릭 핸들러 함수
-  const handleCreateAccount = () => {
-    navigate('/signup'); // /signup 경로로 이동합니다.
+  // "Forgot id?" 클릭 핸들러 함수
+  const handleFindId = () => {
+    navigate('/auth/findid');
+  };
+
+  // "Forgot password?" 클릭 핸들러 함수
+  const handleFindPw = () => {
+    navigate('/auth/findpw');
   };
 
   return (
@@ -75,7 +81,10 @@ const Login = () => {
             <a
               className="text-light"
               href="#pablo"
-              onClick={(e) => e.preventDefault()}
+              onClick={(e) => {
+                e.preventDefault();
+                handleFindPw(); // 클릭 시 handleFindPw 함수 호출
+              }}
             >
               <small>Forgot password?</small>
             </a>
@@ -84,9 +93,12 @@ const Login = () => {
             <a
               className="text-light"
               href="#pablo"
-              onClick={handleCreateAccount} // 클릭 시 handleCreateAccount 함수 호출
+              onClick={(e) => {
+                e.preventDefault();
+                handleFindId(); // 클릭 시 handleFindId 함수 호출
+              }}
             >
-              <small>Create new account</small>
+              <small>Forgot id?</small>
             </a>
           </Col>
         </Row>
