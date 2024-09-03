@@ -1,4 +1,3 @@
-
 import {
   Button,
   Card,
@@ -30,7 +29,7 @@ const Profile = () => {
                       <img
                         alt="..."
                         className="rounded-circle"
-                        src={require("../../assets/img/theme/team-4-800x800.jpg")}
+                        src={require("../../assets/img/theme/team-4-800x800.jpg").default} // .default 추가
                       />
                     </a>
                   </div>
@@ -268,8 +267,9 @@ const Profile = () => {
                         <FormGroup>
                           <label
                             className="form-control-label"
-                            htmlFor="input-country"
-                        Postal code
+                            htmlFor="input-postal-code"
+                          >
+                            Postal code
                           </label>
                           <Input
                             className="form-control-alternative"
@@ -291,8 +291,7 @@ const Profile = () => {
                         className="form-control-alternative"
                         placeholder="A few words about you ..."
                         rows="4"
-                        defaultValue="A beautiful Dashboard for Bootstrap 4. It is Free and
-                        Open Source."
+                        defaultValue="A beautiful Dashboard for Bootstrap 4. It is Free and Open Source."
                         type="textarea"
                       />
                     </FormGroup>
