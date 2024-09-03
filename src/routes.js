@@ -21,6 +21,8 @@ import Register from "views/examples/Register.js";
 import Login from "views/examples/Login.js";
 import Signup from "views/examples/Signup";
 import Icons from "views/examples/Icons.js";
+import FindId from "views/examples/Findid";
+import FindPw  from "views/examples/Findpw";
 
 var routes = [
   {
@@ -65,5 +67,19 @@ var routes = [
     component: <Register />,
     layout: "/auth",
   },
+  {
+    path: "/findid",
+    name: "Findid",
+    icon: "ni ni-circle-08 text-pink",
+    component: <FindId />,
+    layout: "/auth",
+  },
+  {
+    path: "/findpw",
+    name: "Findpw",
+    icon: "ni ni-circle-08 text-pink",
+    component: <FindPw />,
+    layout: "/auth",
+  }
 ];
 export default routes;
