@@ -20,7 +20,7 @@ const Signup = () => {
         <Card className="bg-secondary shadow border-0">
           <CardHeader className="bg-transparent pb-5">
             <div className="text-center mt-2 mb-3">
-              <small>회원가입</small>
+              <small>회원가입-</small>
             </div>
           </CardHeader>
           <CardBody className="px-lg-5 py-lg-5">

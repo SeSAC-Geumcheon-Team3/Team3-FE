@@ -1,14 +1,31 @@
-import React from 'react';
-import { Button, Card, CardHeader, CardBody, FormGroup, Form, Row, Col } from 'reactstrap';
+import React, { useState } from 'react';
+import { Button, Card, CardHeader, CardBody, FormGroup, Form, Row, Col, Input, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import { useNavigate } from 'react-router-dom';
 
 const AccountDeletion = () => {
+  const [isChecked, setIsChecked] = useState(false); // Checkbox 상태 관리
+  const [modalOpen, setModalOpen] = useState(false); // 모달 상태 관리
   const navigate = useNavigate();
 
+  // Checkbox 상태 업데이트
+  const handleCheckboxChange = () => {
+    setIsChecked(!isChecked);
+  };
+
+  // 탈퇴 확인
   const handleConfirmDeletion = () => {
+    if (!isChecked) {
+      setModalOpen(true); // 동의하지 않았을 때 모달 열기
+      return;
+    }
     // 실제 탈퇴 처리 로직을 추가하세요
     alert("회원 탈퇴가 완료되었습니다.");
     navigate('/'); // 홈 페이지로 리디렉션
+  };
+
+  // 모달 닫기
+  const handleCloseModal = () => {
+    setModalOpen(false);
   };
 
   return (
@@ -29,6 +46,17 @@ const AccountDeletion = () => {
                   탈퇴 후에는 작성하신 글을 수정 혹은 삭제하실 수 없어요. 
                   탈퇴 신청 전에 꼭 확인해 주세요!
                 </p>
+                <div className="form-check">
+                  <Input 
+                    type="checkbox" 
+                    id="termsCheck" 
+                    checked={isChecked}
+                    onChange={handleCheckboxChange}
+                  />
+                  <label className="form-check-label" htmlFor="termsCheck">
+                    회원 탈퇴 유의사항을 확인하였으며 동의합니다.
+                  </label>
+                </div>
               </FormGroup>
               <div className="text-center">
                 <Button className="my-4" color="danger" onClick={handleConfirmDeletion}>
@@ -42,6 +70,19 @@ const AccountDeletion = () => {
           </CardBody>
         </Card>
       </Col>
+
+      {/* 동의하지 않았을 때의 모달 */}
+      <Modal isOpen={modalOpen} toggle={handleCloseModal}>
+        <ModalHeader>탈퇴 동의 필요</ModalHeader>
+        <ModalBody>
+          <p>동의하기 버튼을 누르시지 않으면 탈퇴가 불가능합니다.</p>
+        </ModalBody>
+        <ModalFooter>
+          <Button color="primary" onClick={handleCloseModal}>
+            확인
+          </Button>
+        </ModalFooter>
+      </Modal>
     </>
   );
 };

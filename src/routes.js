@@ -3,7 +3,7 @@ import React from 'react';
 import { Navigate } from 'react-router-dom';
 import Index from 'views/Index.js';
 import Profile from 'views/examples/Profile.js';
-import Register from 'views/examples/Register.js';
+import Register from 'views/examples/Post';
 import Login from 'views/examples/Login.js';
 import Signup from 'views/examples/Signup';
 import Icons from 'views/examples/Icons.js';
