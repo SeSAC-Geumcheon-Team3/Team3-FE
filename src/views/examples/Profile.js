@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Button,
   Card,
@@ -10,11 +10,31 @@ import {
   Container,
   Row,
   Col,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
 } from "reactstrap";
-// core components
 import UserHeader from "components/Headers/UserHeader.js";
 
 const Profile = () => {
+  const [modalOpen, setModalOpen] = useState(false); // 모달 상태
+  const [inputPassword, setInputPassword] = useState(""); // 사용자가 입력한 비밀번호
+  const [isPasswordVerified, setIsPasswordVerified] = useState(false); // 비밀번호 검증 결과
+
+  const toggleModal = () => setModalOpen(!modalOpen);
+
+  // 비밀번호 확인 로직
+  const handlePasswordVerification = () => {
+    const storedPassword = "123456"; // 서버에서 가져온 비밀번호로 대체 필요
+    if (inputPassword === storedPassword) {
+      setIsPasswordVerified(true);
+      toggleModal();
+    } else {
+      alert("비밀번호가 일치하지 않습니다.");
+    }
+  };
+
   return (
     <>
       <UserHeader />
@@ -23,41 +43,7 @@ const Profile = () => {
         <Row>
           <Col className="order-xl-2 mb-5 mb-xl-0" xl="4">
             <Card className="card-profile shadow">
-              <Row className="justify-content-center">
-                <Col className="order-lg-2" lg="3">
-                  <div className="card-profile-image">
-                    <a href="#pablo" onClick={(e) => e.preventDefault()}>
-                      <img
-                        alt="..."
-                        className="rounded-circle"
-                        src={require("../../assets/img/theme/team-4-800x800.jpg").default}
-                      />
-                    </a>
-                  </div>
-                </Col>
-              </Row>
-              <CardHeader className="text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">
-                <div className="d-flex justify-content-between">
-                  <Button
-                    className="mr-4"
-                    color="info"
-                    href="#pablo"
-                    onClick={(e) => e.preventDefault()}
-                    size="sm"
-                  >
-                    Connect
-                  </Button>
-                  <Button
-                    className="float-right"
-                    color="default"
-                    href="#pablo"
-                    onClick={(e) => e.preventDefault()}
-                    size="sm"
-                  >
-                    Message
-                  </Button>
-                </div>
-              </CardHeader>
+              {/* 기존 프로필 정보 */}
               <CardBody className="pt-0 pt-md-4">
                 <Row>
                   <div className="col">
@@ -77,32 +63,34 @@ const Profile = () => {
                     </div>
                   </div>
                 </Row>
+
                 <div className="text-center">
                   <h3>Jessica Jones</h3>
                   <hr className="my-4" />
-                  {/* 성별 선택 체크박스 */}
-                  <div className="gender-selection my-3">
-                    <label>성별</label>
-                    <div>
-                      <input type="radio" id="male" name="gender" value="male" />
-                      <label htmlFor="male">남자</label>
-                    </div>
-                    <div>
-                      <input type="radio" id="female" name="gender" value="female" />
-                      <label htmlFor="female">여자</label>
-                    </div>
-                    <div>
-                      <input type="radio" id="none" name="gender" value="none" />
-                      <label htmlFor="none">선택 안함</label>
+{/* 성별 선택 체크박스 */}
+<div className="my-3">
+                    <h5>성별:</h5>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <div style={{ margin: '0 10px' }}>
+                        <input type="radio" id="male" name="gender" value="male" />
+                        <label htmlFor="male">남자</label>
+                      </div>
+                      <div style={{ margin: '0 10px' }}>
+                        <input type="radio" id="female" name="gender" value="female" />
+                        <label htmlFor="female">여자</label>
+                      </div>
+                      <div style={{ margin: '0 10px' }}>
+                        <input type="radio" id="none" name="gender" value="none" />
+                        <label htmlFor="none">선택 안함</label>
+                      </div>
                     </div>
                   </div>
 
                   {/* 생년월일 선택 박스 */}
-                  <div className="birthdate-selection my-3">
-                    <label>생년월일:</label>
-                    <div>
-                      {/* 연도 선택 */}
-                      <select id="year" name="year">
+                  <div className="my-3">
+                    <h5>생년월일:</h5>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <select id="year" name="year" style={{ margin: '0 5px' }}>
                         <option value="">년</option>
                         {Array.from({ length: 105 }, (_, i) => (
                           <option key={2024 - i} value={2024 - i}>
@@ -110,9 +98,7 @@ const Profile = () => {
                           </option>
                         ))}
                       </select>
-
-                      {/* 월 선택 */}
-                      <select id="month" name="month">
+                      <select id="month" name="month" style={{ margin: '0 5px' }}>
                         <option value="">월</option>
                         {Array.from({ length: 12 }, (_, i) => (
                           <option key={i + 1} value={i + 1}>
@@ -120,9 +106,7 @@ const Profile = () => {
                           </option>
                         ))}
                       </select>
-
-                      {/* 일 선택 */}
-                      <select id="day" name="day">
+                      <select id="day" name="day" style={{ margin: '0 5px' }}>
                         <option value="">일</option>
                         {Array.from({ length: 31 }, (_, i) => (
                           <option key={i + 1} value={i + 1}>
@@ -134,16 +118,18 @@ const Profile = () => {
                   </div>
 
                   {/* 가구원 수 선택 박스 */}
-                  <div className="household-size-selection my-3">
-                    <label>가구원 수:</label>
-                    <select id="household-size" name="household-size">
-                      <option value="">선택하세요</option>
-                      {Array.from({ length: 10 }, (_, i) => (
-                        <option key={i + 1} value={i + 1}>
-                          {i + 1}명
-                        </option>
-                      ))}
-                    </select>
+                  <div className="my-3">
+                    <h5>가구원 수:</h5>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <select id="household-size" name="household-size">
+                        <option value="">선택하세요</option>
+                        {Array.from({ length: 10 }, (_, i) => (
+                          <option key={i + 1} value={i + 1}>
+                            {i + 1}명
+                          </option>
+                        ))}
+                      </select>
+                    </div>
                   </div>
                 </div>
               </CardBody>
@@ -156,13 +142,18 @@ const Profile = () => {
                   <Col xs="8">
                     <h3 className="mb-0">My account</h3>
                   </Col>
-                  <Col className="text-right" xs="4"></Col>
+                  <Col className="text-right" xs="4">
+                    <Button color="primary" onClick={toggleModal}>
+                      개인 정보 수정
+                    </Button>
+                  </Col>
                 </Row>
               </CardHeader>
               <CardBody>
                 <Form>
                   <h6 className="heading-small text-muted mb-4">User information</h6>
                   <div className="pl-lg-4">
+                    {/* 닉네임, 이메일, 이름, 전화번호 필드 */}
                     <Row>
                       <Col lg="6">
                         <FormGroup>
@@ -175,6 +166,7 @@ const Profile = () => {
                             id="input-username"
                             placeholder="Username"
                             type="text"
+                            disabled={!isPasswordVerified} // 비밀번호 검증 전에는 비활성화
                           />
                         </FormGroup>
                       </Col>
@@ -188,6 +180,7 @@ const Profile = () => {
                             id="input-email"
                             placeholder="example@example.com"
                             type="email"
+                            disabled={!isPasswordVerified} // 비밀번호 검증 전에는 비활성화
                           />
                         </FormGroup>
                       </Col>
@@ -204,6 +197,7 @@ const Profile = () => {
                             id="input-first-name"
                             placeholder="First name"
                             type="text"
+                            disabled={!isPasswordVerified} // 비밀번호 검증 전에는 비활성화
                           />
                         </FormGroup>
                       </Col>
@@ -218,6 +212,7 @@ const Profile = () => {
                             id="input-phone"
                             placeholder="Phone"
                             type="text"
+                            disabled={!isPasswordVerified} // 비밀번호 검증 전에는 비활성화
                           />
                         </FormGroup>
                       </Col>
@@ -233,10 +228,10 @@ const Profile = () => {
                             id="input-password"
                             placeholder="Password"
                             type="password"
+                            disabled={!isPasswordVerified} // 비밀번호 검증 전에는 비활성화
                           />
                         </FormGroup>
                       </Col>
-                      <Col lg="6"></Col>
                     </Row>
                   </div>
                 </Form>
@@ -245,6 +240,38 @@ const Profile = () => {
           </Col>
         </Row>
       </Container>
+
+{/* 비밀번호 확인 모달 */}
+<Modal isOpen={modalOpen} toggle={toggleModal}>
+  <ModalHeader>
+    <h1 style={{ fontSize: '2rem', margin: '0', marginBottom: '-4rem' }}>
+      계정 정보 확인
+    </h1>
+  </ModalHeader>
+  <ModalBody>
+    <hr style={{ marginBottom: '1rem' }} />
+    <FormGroup>
+      <label>비밀번호를 입력하세요:</label>
+      <Input
+        type="password"
+        value={inputPassword}
+        onChange={(e) => setInputPassword(e.target.value)}
+      />
+      <small className="text-muted mt-2 d-block">
+        회원님의 정보를 안전하게 보호하기 위해 비밀번호를 입력 후 계정 정보에 접근 가능합니다.
+      </small>
+    </FormGroup>
+  </ModalBody>
+  <ModalFooter>
+    <Button color="primary" onClick={handlePasswordVerification}>
+      확인
+    </Button>
+    <Button color="secondary" onClick={toggleModal}>
+      취소
+    </Button>
+  </ModalFooter>
+</Modal>
+
     </>
   );
 };
