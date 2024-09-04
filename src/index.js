@@ -9,11 +9,6 @@ import "assets/scss/argon-dashboard-react.scss";
 
 import AdminLayout from "layouts/Admin";
 import AuthLayout from "layouts/Auth";
-import Index from "views/Index";
-import Login from "views/examples/Login";
-import Register from "views/examples/Post";
-import FindId from "views/examples/Findid";
-import FindPw from "views/examples/Findpw"; // 경로 확인
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 

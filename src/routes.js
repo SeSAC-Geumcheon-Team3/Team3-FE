@@ -1,14 +1,13 @@
 // src/routes.js
 import React from 'react';
-import { Navigate } from 'react-router-dom';
 import Index from 'views/Index.js';
 import Profile from 'views/examples/Profile.js';
 import Register from 'views/examples/Post';
-import Login from 'views/examples/Login.js';
-import Signup from 'views/examples/Signup';
+import Login from 'views/Login.js';
+import Signup from 'views/Signup';
 import Icons from 'views/examples/Icons.js';
-import FindId from 'views/examples/Findid';
-import FindPw from 'views/examples/Findpw';
+import FindId from 'views/Findid';
+import FindPw from 'views/Findpw';
 import AccountDeletion from 'views/examples/Accountdeletion'; // 경로 수정
 
 const routes = [
