@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
     Button,
     Card,
@@ -20,7 +21,7 @@ export default function PasswordChange(){
 
     const [newPassword, setNewPassword] = useState("");     // 새 비밀번호
     const [confirmNewPassword, setConfirmNewPassword] = useState("");     // 새 비밀번호 확인
-    
+
     return (
         <Row>
             <Col lg="6">

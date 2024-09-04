@@ -9,8 +9,15 @@ import Icons from 'views/examples/Icons.js';
 import FindId from 'views/Findid';
 import FindPw from 'views/Findpw';
 import AccountDeletion from 'views/examples/Accountdeletion'; // 경로 수정
+import PasswordChange from 'views/PasswordChange';
 
 const routes = [
+  {
+    path:'/password',
+    name:'Password Change',
+    component:<PasswordChange/>,
+    layout:'/admin'
+  },
   {
     path: '/index',
     name: 'Dashboard',

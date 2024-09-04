@@ -1,3 +1,13 @@
+.btn{
+    display:flex;
+    flex-shrink:1;
+    white-space: nowrap;
+    width: 50%;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
 .btn_wrapper{
     display:flex;
     justify-content: center;

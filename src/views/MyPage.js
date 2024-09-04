@@ -33,6 +33,7 @@ const MyPage = () => {
   
   const [memberInfo, setMemberInfo] = useState();
 
+  const [changeMemberInfo, setChangeMemberInfo] = useState(false);  //사용자 정보 수정 상태(활성화:true, 비활성화:false)  
   const [profile, setProfile] = useState("");
   const [email, setEmail] = useState("");
   const [nickname, setNickname] = useState("");
@@ -45,22 +46,22 @@ const MyPage = () => {
 
   const navigate = useNavigate();
 
-  const toggleModal = () => setModalOpen(!modalOpen);
+  const onClickChangeMemberInfo = () => setChangeMemberInfo(true);
+
+  const toggleModal = () => setModalOpen(true);
 
   // 입력값 핸들러
   const handleInputChange = (setter) => (e) => setter(e.target.value);
-
 
   /**
    * 비밀번호 검증
    */
   const handlePasswordVerification = () => {
-
     getAuthByPW(accessToken, inputPassword)
       .then(res=>{
         // 비밀번호 검증 후 비밀번호 변경 모드 활성화
         setIsPasswordVerified(true)
-        toggleModal();
+        window.location.href="/admin/PasswordChange"
     })
       .catch(err=>{
         // 인증 실패
@@ -70,15 +71,17 @@ const MyPage = () => {
     })
   };
 
-
   // 회원 탈퇴 버튼 클릭 시 라우팅
   const handleAccountDeletion = () => {
     navigate('/admin/account-deletion'); // 절대 경로를 사용하여 이동
   };
 
+  // 비밀번호 수정 버튼 클릭
+  const onClickEditPW = () => setModalOpen(!modalOpen);
+
 
   /**
-   * 회원정보 수정
+   * 회원정보 수정 버튼 클릭
    */
   const onClickEditBtnHandler = () => {
     const data = {
@@ -202,8 +205,11 @@ const MyPage = () => {
 
                   {/* 회원 탈퇴 버튼 */}
                   <div className="my-3">
-                    <Button color="danger" onClick={handleAccountDeletion}>
+                    <Button color="danger" onClick={handleAccountDeletion} style={{width:'40%'}}>
                       회원 탈퇴
+                    </Button>
+                    <Button color="primary" onClick={onClickEditPW} style={{width:'40%'}}>
+                          비밀번호 수정
                     </Button>
                   </div>
                 </div>
@@ -217,8 +223,8 @@ const MyPage = () => {
                   <Col xs="8">
                     <h2 className="mb-0">내 정보</h2>
                   </Col>
-                  <Col className="text-right" xs="4" style={{textAlign:"right"}}>
-                    <Button color="primary" onClick={toggleModal} style={{ display: isPasswordVerified ? 'none' : 'block', marginLeft:"auto" }}>
+                  <Col className="text-right" xs="4" style={{display:"flex", justifyContent: "flex-end"}}>
+                    <Button className={styles.btn} color="primary" onClick={onClickChangeMemberInfo} style={{ display: changeMemberInfo ? 'none' : 'block'}}>
                       내 정보 수정
                     </Button>
                   </Col>
@@ -240,7 +246,7 @@ const MyPage = () => {
                             id="input-username"
                             placeholder="사용할 닉네임을 입력하세요"
                             type="text"
-                            disabled={!isPasswordVerified} // 비밀번호 검증 전에는 비활성화
+                            disabled={!changeMemberInfo} // 비밀번호 검증 전에는 비활성화
                             onChange={handleInputChange(setNickname)}
                           />
                         </FormGroup>
@@ -256,7 +262,7 @@ const MyPage = () => {
                             defaultValue={email}
                             placeholder='사용할 이메일을 입력하세요'
                             type="email"
-                            disabled={!isPasswordVerified} // 비밀번호 검증 전에는 비활성화
+                            disabled={!changeMemberInfo} // 비밀번호 검증 전에는 비활성화
                             onChange={handleInputChange(setEmail)}
                           />
                         </FormGroup>
@@ -274,7 +280,7 @@ const MyPage = () => {
                             id="input-first-name"
                             placeholder="이름을 입력하세요"
                             type="text"
-                            disabled={!isPasswordVerified} // 비밀번호 검증 전에는 비활성화
+                            disabled={!changeMemberInfo} // 비밀번호 검증 전에는 비활성화
                             onChange={handleInputChange(setName)}
                           />
                         </FormGroup>
@@ -290,32 +296,17 @@ const MyPage = () => {
                             id="input-phone"
                             placeholder="전화번호를 입력하세요"
                             type="text"
-                            disabled={!isPasswordVerified} // 비밀번호 검증 전에는 비활성화
+                            disabled={!changeMemberInfo} // 비밀번호 검증 전에는 비활성화
                             onChange={handleInputChange(setPhone)}
                           />
                         </FormGroup>
                       </Col>
                     </Row>
                     <Row>
-                      <Col lg="6">
-                        <FormGroup style={{ display: isPasswordVerified ? 'none' : 'block' }}>
-                          <label className="form-control-label" htmlFor="input-password">
-                            비밀번호
-                          </label>
-                          <Input
-                            className="form-control-alternative"
-                            id="input-password"
-                            defaultValue="**********************"
-                            placeholder="**********************"
-                            type="password"
-                            disabled={true} // 비밀번호 검증 전에는 비활성화
-                          />
-                        </FormGroup>
-                      </Col>
                     </Row>
 
                     <div className={styles.btn_wrapper}>
-                      <Button color="primary" onClick={onClickEditBtnHandler} style={{ display: isPasswordVerified ? 'block' : 'none' }}>
+                      <Button color="primary" onClick={onClickEditBtnHandler} style={{ display: changeMemberInfo ? 'block' : 'none' }}>
                         수정
                       </Button>
                     </div>
