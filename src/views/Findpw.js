@@ -4,15 +4,17 @@ import { useNavigate } from 'react-router-dom';
 
 const FindPw = () => {
   const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
   const navigate = useNavigate();
 
   const handleFindPw = () => {
-    if (!email) {
-      alert('Please enter your email.');
+    if (!email || !name || !phone) {
+      alert('모든 필드를 입력해주세요.'); // 필드가 빈 경우 팝업을 띄움
       return;
     }
 
-    // 여기에서 이메일로 임의의 비밀번호를 전송하는 로직을 추가합니다.
+    // 여기에 이메일로 임의의 비밀번호를 전송하는 로직을 추가합니다.
     // 예: API 호출하여 이메일로 비밀번호 전송
     // 실제로는 백엔드에서 비밀번호를 생성하여 이메일로 전송해야 합니다.
 
@@ -38,6 +40,38 @@ const FindPw = () => {
         </CardHeader>
         <CardBody className="px-lg-5 py-lg-5">
           <Form role="form">
+            <FormGroup className="mb-3">
+              <InputGroup className="input-group-alternative">
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText>
+                    <i className="ni ni-user" />
+                  </InputGroupText>
+                </InputGroupAddon>
+                <Input
+                  placeholder="Name"
+                  type="text"
+                  autoComplete="new-name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </InputGroup>
+            </FormGroup>
+            <FormGroup className="mb-3">
+              <InputGroup className="input-group-alternative">
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText>
+                    <i className="ni ni-mobile-button" />
+                  </InputGroupText>
+                </InputGroupAddon>
+                <Input
+                  placeholder="Phone Number"
+                  type="text"
+                  autoComplete="new-phone"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                />
+              </InputGroup>
+            </FormGroup>
             <FormGroup className="mb-3">
               <InputGroup className="input-group-alternative">
                 <InputGroupAddon addonType="prepend">
