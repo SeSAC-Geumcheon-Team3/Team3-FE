@@ -1,76 +1,80 @@
-import Index from "views/Index.js";
-import Profile from "views/examples/Profile.js";
-import Register from "views/examples/Register.js";
-import Login from "views/examples/Login.js";
-import Signup from "views/examples/Signup";
-import Icons from "views/examples/Icons.js";
-import FindId from "views/examples/Findid";
-import FindPw  from "views/examples/Findpw";
-import AccountDeletion from "views/examples/Accountdeletion"; // 경로 수정
+// src/routes.js
+import React from 'react';
+import { Navigate } from 'react-router-dom';
+import Index from 'views/Index.js';
+import Profile from 'views/examples/Profile.js';
+import Register from 'views/examples/Register.js';
+import Login from 'views/examples/Login.js';
+import Signup from 'views/examples/Signup';
+import Icons from 'views/examples/Icons.js';
+import FindId from 'views/examples/Findid';
+import FindPw from 'views/examples/Findpw';
+import AccountDeletion from 'views/examples/Accountdeletion'; // 경로 수정
+import AuthRoute from 'components/AuthRoute'; // AuthRoute 임포트
 
-var routes = [
+const routes = [
   {
-    path: "/index",
-    name: "Dashboard",
-    icon: "ni ni-tv-2 text-primary",
-    component: <Index />,
-    layout: "/admin",
+    path: '/index',
+    name: 'Dashboard',
+    icon: 'ni ni-tv-2 text-primary',
+    component: <AuthRoute element={<Index />} />,
+    layout: '/admin',
   },
   {
-    path: "/icons",
-    name: "Icons",
-    icon: "ni ni-planet text-blue",
-    component: <Icons />, 
-    layout: "/admin",
+    path: '/icons',
+    name: 'Icons',
+    icon: 'ni ni-planet text-blue',
+    component: <AuthRoute element={<Icons />} />,
+    layout: '/admin',
   },
   {
-    path: "/user-profile",
-    name: "User Profile",
-    icon: "ni ni-single-02 text-yellow",
-    component: <Profile />,
-    layout: "/admin",
+    path: '/user-profile',
+    name: 'User Profile',
+    icon: 'ni ni-single-02 text-yellow',
+    component: <AuthRoute element={<Profile />} />,
+    layout: '/admin',
   },
   {
-    path: "/signup",
-    name: "Signup",
-    icon: "ni ni-bullet-list-67 text-red",
+    path: '/signup',
+    name: 'Signup',
+    icon: 'ni ni-bullet-list-67 text-red',
     component: <Signup />,
-    layout: "/admin",
+    layout: '/auth',
   },
   {
-    path: "/login",
-    name: "Login",
-    icon: "ni ni-key-25 text-info",
+    path: '/login',
+    name: 'Login',
+    icon: 'ni ni-key-25 text-info',
     component: <Login />,
-    layout: "/auth",
+    layout: '/auth',
   },
   {
-    path: "/register",
-    name: "Register",
-    icon: "ni ni-circle-08 text-pink",
+    path: '/register',
+    name: 'Register',
+    icon: 'ni ni-circle-08 text-pink',
     component: <Register />,
-    layout: "/auth",
+    layout: '/auth',
   },
   {
-    path: "/findid",
-    name: "FindId",
-    icon: "ni ni-circle-08 text-pink",
+    path: '/findid',
+    name: 'FindId',
+    icon: 'ni ni-circle-08 text-pink',
     component: <FindId />,
-    layout: "/auth",
+    layout: '/auth',
   },
   {
-    path: "/findpw",
-    name: "FindPw",
-    icon: "ni ni-circle-08 text-pink",
+    path: '/findpw',
+    name: 'FindPw',
+    icon: 'ni ni-circle-08 text-pink',
     component: <FindPw />,
-    layout: "/auth",
+    layout: '/auth',
   },
   {
-    path: "/account-deletion",
-    name: "Account Deletion",
-    icon: "ni ni-fat-remove text-red",
-    component: <AccountDeletion />,
-    layout: "/admin",
+    path: '/account-deletion',
+    name: 'Account Deletion',
+    icon: 'ni ni-fat-remove text-red',
+    component: <AuthRoute element={<AccountDeletion />} />,
+    layout: '/admin',
   },
 ];
 

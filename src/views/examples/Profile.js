@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+// src/views/examples/Profile.jsx
+import React, { useState } from 'react';
 import {
   Button,
   Card,
@@ -14,13 +15,28 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
-} from "reactstrap";
-import UserHeader from "components/Headers/UserHeader.js";
+} from 'reactstrap';
+import UserHeader from 'components/Headers/UserHeader.js';
+import { useNavigate } from 'react-router-dom'; // useNavigate로 변경
+import { useAuth } from 'context/AuthContext'; // AuthContext 사용
 
 const Profile = () => {
-  const [modalOpen, setModalOpen] = useState(false); // 모달 상태
-  const [inputPassword, setInputPassword] = useState(""); // 사용자가 입력한 비밀번호
+  const [modalOpen, setModalOpen] = useState(false); // 비밀번호 확인 모달 상태
+  const [inputPassword, setInputPassword] = useState(""); // 현재 비밀번호 입력
+  const [newPassword, setNewPassword] = useState(""); // 새 비밀번호
+  const [confirmNewPassword, setConfirmNewPassword] = useState(""); // 새 비밀번호 확인
   const [isPasswordVerified, setIsPasswordVerified] = useState(false); // 비밀번호 검증 결과
+  const [isPasswordChangeMode, setIsPasswordChangeMode] = useState(false); // 비밀번호 변경 모드 활성화 상태
+
+  const navigate = useNavigate();
+  const { isAuthenticated, logout } = useAuth(); // AuthContext 사용
+
+  // 로그인 상태 확인
+  React.useEffect(() => {
+    if (!isAuthenticated) {
+      navigate('/login'); // 로그인되지 않았으면 로그인 페이지로 이동
+    }
+  }, [isAuthenticated, navigate]);
 
   const toggleModal = () => setModalOpen(!modalOpen);
 
@@ -29,10 +45,45 @@ const Profile = () => {
     const storedPassword = "123456"; // 서버에서 가져온 비밀번호로 대체 필요
     if (inputPassword === storedPassword) {
       setIsPasswordVerified(true);
+      setIsPasswordChangeMode(true); // 비밀번호 검증 후 비밀번호 변경 모드 활성화
       toggleModal();
     } else {
       alert("비밀번호가 일치하지 않습니다.");
     }
+  };
+
+  // 비밀번호 변경 로직
+  const handleChangePassword = () => {
+    if (!isPasswordVerified) {
+      alert("비밀번호 검증이 필요합니다.");
+      return;
+    }
+
+    const storedPassword = "123456"; // 서버에서 가져온 비밀번호로 대체 필요
+    if (inputPassword !== storedPassword) {
+      alert("현재 비밀번호가 일치하지 않습니다.");
+      return;
+    }
+    if (newPassword !== confirmNewPassword) {
+      alert("새 비밀번호와 확인 비밀번호가 일치하지 않습니다.");
+      return;
+    }
+    if (newPassword.length < 6) { // 비밀번호 최소 길이 예시
+      alert("새 비밀번호는 최소 6자리 이상이어야 합니다.");
+      return;
+    }
+
+    // 비밀번호 변경 요청을 서버로 보내는 로직 필요
+    console.log("비밀번호 변경 요청: 현재 비밀번호", inputPassword, "새 비밀번호", newPassword);
+    alert("비밀번호가 변경되었습니다.");
+    setNewPassword(""); // 새 비밀번호 입력 필드 초기화
+    setConfirmNewPassword(""); // 새 비밀번호 확인 필드 초기화
+    setIsPasswordChangeMode(false); // 비밀번호 변경 모드 비활성화
+  };
+
+  // 회원 탈퇴 버튼 클릭 시 라우팅
+  const handleAccountDeletion = () => {
+    navigate('/admin/account-deletion'); // 절대 경로를 사용하여 이동
   };
 
   return (
@@ -67,8 +118,8 @@ const Profile = () => {
                 <div className="text-center">
                   <h3>Jessica Jones</h3>
                   <hr className="my-4" />
-{/* 성별 선택 체크박스 */}
-<div className="my-3">
+                  {/* 성별 선택 체크박스 */}
+                  <div className="my-3">
                     <h5>성별:</h5>
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
                       <div style={{ margin: '0 10px' }}>
@@ -130,6 +181,13 @@ const Profile = () => {
                         ))}
                       </select>
                     </div>
+                  </div>
+
+                  {/* 회원 탈퇴 버튼 */}
+                  <div className="my-3">
+                    <Button color="danger" onClick={handleAccountDeletion}>
+                      회원 탈퇴
+                    </Button>
                   </div>
                 </div>
               </CardBody>
@@ -233,6 +291,56 @@ const Profile = () => {
                         </FormGroup>
                       </Col>
                     </Row>
+
+                    {/* 비밀번호 변경 폼 */}
+                    {isPasswordChangeMode && (
+                      <Row>
+                        <Col lg="6">
+                          <FormGroup>
+                            <label className="form-control-label" htmlFor="current-password">
+                              현재 비밀번호
+                            </label>
+                            <Input
+                              type="password"
+                              id="current-password"
+                              value={inputPassword}
+                              onChange={(e) => setInputPassword(e.target.value)}
+                            />
+                          </FormGroup>
+                        </Col>
+                        <Col lg="6">
+                          <FormGroup>
+                            <label className="form-control-label" htmlFor="new-password">
+                              새 비밀번호
+                            </label>
+                            <Input
+                              type="password"
+                              id="new-password"
+                              value={newPassword}
+                              onChange={(e) => setNewPassword(e.target.value)}
+                            />
+                          </FormGroup>
+                        </Col>
+                        <Col lg="6">
+                          <FormGroup>
+                            <label className="form-control-label" htmlFor="confirm-new-password">
+                              새 비밀번호 확인
+                            </label>
+                            <Input
+                              type="password"
+                              id="confirm-new-password"
+                              value={confirmNewPassword}
+                              onChange={(e) => setConfirmNewPassword(e.target.value)}
+                            />
+                          </FormGroup>
+                        </Col>
+                        <Col lg="12">
+                          <Button color="primary" onClick={handleChangePassword}>
+                            비밀번호 변경
+                          </Button>
+                        </Col>
+                      </Row>
+                    )}
                   </div>
                 </Form>
               </CardBody>
@@ -241,37 +349,36 @@ const Profile = () => {
         </Row>
       </Container>
 
-{/* 비밀번호 확인 모달 */}
-<Modal isOpen={modalOpen} toggle={toggleModal}>
-  <ModalHeader>
-    <h1 style={{ fontSize: '2rem', margin: '0', marginBottom: '-4rem' }}>
-      계정 정보 확인
-    </h1>
-  </ModalHeader>
-  <ModalBody>
-    <hr style={{ marginBottom: '1rem' }} />
-    <FormGroup>
-      <label>비밀번호를 입력하세요:</label>
-      <Input
-        type="password"
-        value={inputPassword}
-        onChange={(e) => setInputPassword(e.target.value)}
-      />
-      <small className="text-muted mt-2 d-block">
-        회원님의 정보를 안전하게 보호하기 위해 비밀번호를 입력 후 계정 정보에 접근 가능합니다.
-      </small>
-    </FormGroup>
-  </ModalBody>
-  <ModalFooter>
-    <Button color="primary" onClick={handlePasswordVerification}>
-      확인
-    </Button>
-    <Button color="secondary" onClick={toggleModal}>
-      취소
-    </Button>
-  </ModalFooter>
-</Modal>
-
+      {/* 비밀번호 확인 모달 */}
+      <Modal isOpen={modalOpen} toggle={toggleModal}>
+        <ModalHeader>
+          <h1 style={{ fontSize: '2rem', margin: '0', marginBottom: '-4rem' }}>
+            계정 정보 확인
+          </h1>
+        </ModalHeader>
+        <ModalBody>
+          <hr style={{ marginBottom: '1rem' }} />
+          <FormGroup>
+            <label>비밀번호를 입력하세요:</label>
+            <Input
+              type="password"
+              value={inputPassword}
+              onChange={(e) => setInputPassword(e.target.value)}
+            />
+            <small className="text-muted mt-2 d-block">
+              회원님의 정보를 안전하게 보호하기 위해 비밀번호를 입력 후 계정 정보에 접근 가능합니다.
+            </small>
+          </FormGroup>
+        </ModalBody>
+        <ModalFooter>
+          <Button color="primary" onClick={handlePasswordVerification}>
+            확인
+          </Button>
+          <Button color="secondary" onClick={toggleModal}>
+            취소
+          </Button>
+        </ModalFooter>
+      </Modal>
     </>
   );
 };
