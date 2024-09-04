@@ -1,6 +1,5 @@
-// src/views/examples/FindPw.jsx
 import React, { useState } from 'react';
-import { Button, Card, CardHeader, CardBody, FormGroup, Form, Input, InputGroupAddon, InputGroupText, InputGroup, Row, Col } from 'reactstrap';
+import { Button, Card, CardHeader, CardBody, FormGroup, Form, Input, InputGroupAddon, InputGroupText, InputGroup, Col, Row } from 'reactstrap';
 import { useNavigate } from 'react-router-dom';
 
 const FindPw = () => {
@@ -8,11 +7,25 @@ const FindPw = () => {
   const navigate = useNavigate();
 
   const handleFindPw = () => {
-    // 여기에서 이메일 발송 로직을 추가합니다.
-    // 예: API 호출하여 이메일 발송
+    if (!email) {
+      alert('Please enter your email.');
+      return;
+    }
 
-    alert(`Password reset link sent to ${email}`);
-    navigate('/auth/login'); // 이메일 발송 후 로그인 페이지로 이동
+    // 여기에서 이메일로 임의의 비밀번호를 전송하는 로직을 추가합니다.
+    // 예: API 호출하여 이메일로 비밀번호 전송
+    // 실제로는 백엔드에서 비밀번호를 생성하여 이메일로 전송해야 합니다.
+
+    alert(`A new password has been sent to ${email}`);
+    navigate('/auth/login'); // 비밀번호 발송 후 로그인 페이지로 이동
+  };
+
+  const handleForgotId = () => {
+    navigate('/auth/find-id'); // Forgot ID 버튼 클릭 시 FindId 페이지로 이동
+  };
+
+  const handleSignUp = () => {
+    navigate('/auth/signup'); // Sign Up 버튼 클릭 시 Signup 페이지로 이동
   };
 
   return (
@@ -49,6 +62,18 @@ const FindPw = () => {
           </Form>
         </CardBody>
       </Card>
+      <Row className="mt-4">
+        <Col className="text-center">
+          <Button className="my-2" color="link" onClick={handleForgotId}>
+            Forgot ID?
+          </Button>
+        </Col>
+        <Col className="text-center">
+          <Button className="my-2" color="link" onClick={handleSignUp}>
+            Sign Up
+          </Button>
+        </Col>
+      </Row>
     </Col>
   );
 };
