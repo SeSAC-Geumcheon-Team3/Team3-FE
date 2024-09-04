@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Button,
   Card,
@@ -17,19 +17,38 @@ import {
 } from 'reactstrap';
 import UserHeader from 'components/Headers/UserHeader.js';
 import { useNavigate } from 'react-router-dom'; // useNavigate로 변경
+import { useRecoilValue } from 'recoil';
+import { accessTokenState } from 'states/accessTokenAtom';
+import styles from './MyPage.module.css'
+import putMemberInfo from 'apis/member/putMemberInfo';
 import getAuthByPW from 'apis/member/getAuthByPW';
+import getMemberInfo from 'apis/member/getMemberInfo';
 
 const MyPage = () => {
-  const [modalOpen, setModalOpen] = useState(false); // 비밀번호 확인 모달 상태
-  const [inputPassword, setInputPassword] = useState(""); // 현재 비밀번호 입력
-  const [newPassword, setNewPassword] = useState(""); // 새 비밀번호
-  const [confirmNewPassword, setConfirmNewPassword] = useState(""); // 새 비밀번호 확인
-  const [isPasswordVerified, setIsPasswordVerified] = useState(false); //비밀번호 확인 여부 검증
-  const [isPasswordChangeMode, setIsPasswordChangeMode] = useState(false); // 비밀번호 변경 모드 활성화 상태
+  const [modalOpen, setModalOpen] = useState(false);      // 비밀번호 확인 모달
+  const [inputPassword, setInputPassword] = useState(""); // 사용자 인증 비밀번호
+  const [isPasswordVerified, setIsPasswordVerified] = useState(false);  //비밀번호 확인 여부 검증
+
+  const accessToken = useRecoilValue(accessTokenState); // 토큰값
+  
+  const [memberInfo, setMemberInfo] = useState();
+
+  const [profile, setProfile] = useState("");
+  const [email, setEmail] = useState("");
+  const [nickname, setNickname] = useState("");
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [birth, setBirth] = useState("");
+  const [sex, setSex] = useState("");
+  const [household, setHousehold] = useState(0);
+  const [notice, setNotice] = useState();
 
   const navigate = useNavigate();
 
   const toggleModal = () => setModalOpen(!modalOpen);
+
+  // 입력값 핸들러
+  const handleInputChange = (setter) => (e) => setter(e.target.value);
 
 
   /**
@@ -37,58 +56,81 @@ const MyPage = () => {
    */
   const handlePasswordVerification = () => {
 
-    const accessToken="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJfaWR4Ijo0LCJhdXRob3JpdHkiOiJcdWFlMzBcdWJjZjggXHVjMGFjXHVjNmE5XHVjNzkwIiwiaWF0IjoxNzI1NDMyNTMyLjQ1NzY3NjIsImV4cCI6MTcyNTQzNjEzMi40NTc2NzYyfQ.10kJ7kRuddpzNhmpsXw4OLb5E9XuSxj9_9bOqurmsTQ"
-    
     getAuthByPW(accessToken, inputPassword)
       .then(res=>{
         // 비밀번호 검증 후 비밀번호 변경 모드 활성화
         setIsPasswordVerified(true)
-        setIsPasswordChangeMode(true); 
         toggleModal();
     })
       .catch(err=>{
-        setIsPasswordVerified(true)
-        setInputPassword();
-        setIsPasswordChangeMode(false); 
+        // 인증 실패
+        setIsPasswordVerified(false)
+        setInputPassword("");
         alert("비밀번호가 일치하지 않습니다.");
-
     })
   };
 
-  // 비밀번호 변경 로직
-  const handleChangePassword = () => {
-    
-    if (!isPasswordVerified) {
-      alert("비밀번호 검증이 필요합니다.");
-      return;
-    }
-
-    const storedPassword = "123456"; // 서버에서 가져온 비밀번호로 대체 필요
-    if (inputPassword !== storedPassword) {
-      alert("현재 비밀번호가 일치하지 않습니다.");
-      return;
-    }
-    if (newPassword !== confirmNewPassword) {
-      alert("새 비밀번호와 확인 비밀번호가 일치하지 않습니다.");
-      return;
-    }
-    if (newPassword.length < 6) { // 비밀번호 최소 길이 예시
-      alert("새 비밀번호는 최소 6자리 이상이어야 합니다.");
-      return;
-    }
-
-    // 비밀번호 변경 요청을 서버로 보내는 로직 필요
-    console.log("비밀번호 변경 요청: 현재 비밀번호", inputPassword, "새 비밀번호", newPassword);
-    alert("비밀번호가 변경되었습니다.");
-    setNewPassword(""); // 새 비밀번호 입력 필드 초기화
-    setConfirmNewPassword(""); // 새 비밀번호 확인 필드 초기화
-    setIsPasswordChangeMode(false); // 비밀번호 변경 모드 비활성화
-  };
 
   // 회원 탈퇴 버튼 클릭 시 라우팅
   const handleAccountDeletion = () => {
     navigate('/admin/account-deletion'); // 절대 경로를 사용하여 이동
   };
+
+
+  /**
+   * 회원정보 수정
+   */
+  const onClickEditBtnHandler = () => {
+    const data = {
+      "name":name,
+      "email":email,
+      "nickname":nickname,
+      "phone":phone,
+      "profile_img":profile,
+      "birth":birth,
+      "sex":sex,
+      "household":household,
+      "notice":notice,
+    }
+    putMemberInfo(accessToken, data).then(res=>{
+      // 1. 회원 정보 수정이 완료되었다는 메시지 띄우기
+      alert(res.data.message);
+
+      // 2. 원래 페이지로 새로고침 
+      window.location.href='/admin/mypage'; // 절대 경로를 사용하여 이동
+
+    }).catch(err=>alert(err))
+  }
+
+  /**
+   * 회원 정보 받아오기
+   * @returns 
+   */
+  const fetchData = async () => {
+    return await getMemberInfo(accessToken)
+  }
+
+
+  // memberInfo에 변화가 생길 때 마다 페이지 새로고침
+  useEffect(()=>{
+    
+    fetchData().then(res=>{
+      console.log(res.data)
+
+      // 사용자 정보 state에 입력
+      setMemberInfo(res.data)
+      setEmail(res.data.email);
+      setName(res.data.name);
+      setNickname(res.data.nickname);
+      setBirth(res.data.birth);
+      setPhone(res.data.phone);
+      setSex(res.data.sex);
+      setHousehold(res.data.household);
+      setNotice(res.data.notice);
+
+    }).catch(err=> console.log(err))
+
+  },[])
 
   return (
     <>
@@ -100,45 +142,16 @@ const MyPage = () => {
             <Card className="card-profile shadow">
               {/* 기존 프로필 정보 */}
               <CardBody className="pt-0 pt-md-4">
-                <Row>
-                  <div className="col">
-                    <div className="card-profile-stats d-flex justify-content-center mt-md-5">
-                      <div>
-                        <span className="heading">22</span>
-                        <span className="description">Friends</span>
-                      </div>
-                      <div>
-                        <span className="heading">10</span>
-                        <span className="description">Photos</span>
-                      </div>
-                      <div>
-                        <span className="heading">89</span>
-                        <span className="description">Comments</span>
-                      </div>
-                    </div>
-                  </div>
-                </Row>
-
+                
+                <div className={styles.profileHolder}>
+                  <img src={profile||'https://stickershop.line-scdn.net/stickershop/v1/product/1345501/LINEStorePC/main.png?v=1'} style={{ width: '200px', height: '200px', objectFit: 'cover' }} alt="profile"  />
+                </div>
+                
                 <div className="text-center">
-                  <h3>Jessica Jones</h3>
+                  <h3>{name}</h3>
                   <hr className="my-4" />
-                  {/* 성별 선택 체크박스 */}
                   <div className="my-3">
-                    <h5>성별:</h5>
-                    <div style={{ display: 'flex', justifyContent: 'center' }}>
-                      <div style={{ margin: '0 10px' }}>
-                        <input type="radio" id="male" name="gender" value="male" />
-                        <label htmlFor="male">남자</label>
-                      </div>
-                      <div style={{ margin: '0 10px' }}>
-                        <input type="radio" id="female" name="gender" value="female" />
-                        <label htmlFor="female">여자</label>
-                      </div>
-                      <div style={{ margin: '0 10px' }}>
-                        <input type="radio" id="none" name="gender" value="none" />
-                        <label htmlFor="none">선택 안함</label>
-                      </div>
-                    </div>
+                    <h5>성별: {sex} </h5>
                   </div>
 
                   {/* 생년월일 선택 박스 */}
@@ -202,18 +215,17 @@ const MyPage = () => {
               <CardHeader className="bg-white border-0">
                 <Row className="align-items-center">
                   <Col xs="8">
-                    <h3 className="mb-0">My account</h3>
+                    <h2 className="mb-0">내 정보</h2>
                   </Col>
-                  <Col className="text-right" xs="4">
-                    <Button color="primary" onClick={toggleModal}>
-                      개인 정보 수정
+                  <Col className="text-right" xs="4" style={{textAlign:"right"}}>
+                    <Button color="primary" onClick={toggleModal} style={{ display: isPasswordVerified ? 'none' : 'block', marginLeft:"auto" }}>
+                      내 정보 수정
                     </Button>
                   </Col>
                 </Row>
               </CardHeader>
               <CardBody>
                 <Form>
-                  <h6 className="heading-small text-muted mb-4">User information</h6>
                   <div className="pl-lg-4">
                     {/* 닉네임, 이메일, 이름, 전화번호 필드 */}
                     <Row>
@@ -224,11 +236,12 @@ const MyPage = () => {
                           </label>
                           <Input
                             className="form-control-alternative"
-                            defaultValue="관리왕 새싹이"
+                            value={nickname}
                             id="input-username"
-                            placeholder="Username"
+                            placeholder="사용할 닉네임을 입력하세요"
                             type="text"
                             disabled={!isPasswordVerified} // 비밀번호 검증 전에는 비활성화
+                            onChange={handleInputChange(setNickname)}
                           />
                         </FormGroup>
                       </Col>
@@ -240,9 +253,11 @@ const MyPage = () => {
                           <Input
                             className="form-control-alternative"
                             id="input-email"
-                            placeholder="example@example.com"
+                            defaultValue={email}
+                            placeholder='사용할 이메일을 입력하세요'
                             type="email"
                             disabled={!isPasswordVerified} // 비밀번호 검증 전에는 비활성화
+                            onChange={handleInputChange(setEmail)}
                           />
                         </FormGroup>
                       </Col>
@@ -255,11 +270,12 @@ const MyPage = () => {
                           </label>
                           <Input
                             className="form-control-alternative"
-                            defaultValue="김새싹"
+                            defaultValue={name}
                             id="input-first-name"
-                            placeholder="First name"
+                            placeholder="이름을 입력하세요"
                             type="text"
                             disabled={!isPasswordVerified} // 비밀번호 검증 전에는 비활성화
+                            onChange={handleInputChange(setName)}
                           />
                         </FormGroup>
                       </Col>
@@ -270,81 +286,40 @@ const MyPage = () => {
                           </label>
                           <Input
                             className="form-control-alternative"
-                            defaultValue="010-1234-5678"
+                            defaultValue={phone}
                             id="input-phone"
-                            placeholder="Phone"
+                            placeholder="전화번호를 입력하세요"
                             type="text"
                             disabled={!isPasswordVerified} // 비밀번호 검증 전에는 비활성화
+                            onChange={handleInputChange(setPhone)}
                           />
                         </FormGroup>
                       </Col>
                     </Row>
                     <Row>
                       <Col lg="6">
-                        <FormGroup>
+                        <FormGroup style={{ display: isPasswordVerified ? 'none' : 'block' }}>
                           <label className="form-control-label" htmlFor="input-password">
                             비밀번호
                           </label>
                           <Input
                             className="form-control-alternative"
                             id="input-password"
-                            placeholder="Password"
+                            defaultValue="**********************"
+                            placeholder="**********************"
                             type="password"
-                            disabled={!isPasswordVerified} // 비밀번호 검증 전에는 비활성화
+                            disabled={true} // 비밀번호 검증 전에는 비활성화
                           />
                         </FormGroup>
                       </Col>
                     </Row>
 
-                    {/* 비밀번호 변경 폼 */}
-                    {isPasswordChangeMode && (
-                      <Row>
-                        <Col lg="6">
-                          <FormGroup>
-                            <label className="form-control-label" htmlFor="current-password">
-                              현재 비밀번호
-                            </label>
-                            <Input
-                              type="password"
-                              id="current-password"
-                              value={inputPassword}
-                              onChange={(e) => setInputPassword(e.target.value)}
-                            />
-                          </FormGroup>
-                        </Col>
-                        <Col lg="6">
-                          <FormGroup>
-                            <label className="form-control-label" htmlFor="new-password">
-                              새 비밀번호
-                            </label>
-                            <Input
-                              type="password"
-                              id="new-password"
-                              value={newPassword}
-                              onChange={(e) => setNewPassword(e.target.value)}
-                            />
-                          </FormGroup>
-                        </Col>
-                        <Col lg="6">
-                          <FormGroup>
-                            <label className="form-control-label" htmlFor="confirm-new-password">
-                              새 비밀번호 확인
-                            </label>
-                            <Input
-                              type="password"
-                              id="confirm-new-password"
-                              value={confirmNewPassword}
-                              onChange={(e) => setConfirmNewPassword(e.target.value)}
-                            />
-                          </FormGroup>
-                        </Col>
-                        <Col lg="12">
-                          <Button color="primary" onClick={handleChangePassword}>
-                            비밀번호 변경
-                          </Button>
-                        </Col>
-                      </Row>
-                    )}
+                    <div className={styles.btn_wrapper}>
+                      <Button color="primary" onClick={onClickEditBtnHandler} style={{ display: isPasswordVerified ? 'block' : 'none' }}>
+                        수정
+                      </Button>
+                    </div>
+                    
                   </div>
                 </Form>
               </CardBody>
