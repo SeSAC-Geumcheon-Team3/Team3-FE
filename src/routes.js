@@ -1,7 +1,7 @@
 // src/routes.js
 import React from 'react';
 import Index from 'views/Index.js';
-import Profile from 'views/examples/Profile.js';
+import MyPage from 'views/MyPage';
 import Register from 'views/examples/Post';
 import Login from 'views/Login.js';
 import Signup from 'views/Signup';
@@ -26,10 +26,10 @@ const routes = [
     layout: '/admin',
   },
   {
-    path: '/user-profile',
-    name: 'User Profile',
+    path: '/mypage',
+    name: 'User mypage',
     icon: 'ni ni-single-02 text-yellow',
-    component: <Profile />,
+    component: <MyPage />,
     layout: '/admin',
   },
   {

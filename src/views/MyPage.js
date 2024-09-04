@@ -1,4 +1,3 @@
-// src/views/examples/Profile.jsx
 import React, { useState } from 'react';
 import {
   Button,
@@ -19,7 +18,7 @@ import {
 import UserHeader from 'components/Headers/UserHeader.js';
 import { useNavigate } from 'react-router-dom'; // useNavigate로 변경
 
-const Profile = () => {
+const MyPage = () => {
   const [modalOpen, setModalOpen] = useState(false); // 비밀번호 확인 모달 상태
   const [inputPassword, setInputPassword] = useState(""); // 현재 비밀번호 입력
   const [newPassword, setNewPassword] = useState(""); // 새 비밀번호
@@ -374,4 +373,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default MyPage;
