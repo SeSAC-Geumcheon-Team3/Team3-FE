@@ -10,28 +10,27 @@ import Icons from 'views/examples/Icons.js';
 import FindId from 'views/examples/Findid';
 import FindPw from 'views/examples/Findpw';
 import AccountDeletion from 'views/examples/Accountdeletion'; // 경로 수정
-import AuthRoute from 'components/AuthRoute'; // AuthRoute 임포트
 
 const routes = [
   {
     path: '/index',
     name: 'Dashboard',
     icon: 'ni ni-tv-2 text-primary',
-    component: <AuthRoute element={<Index />} />,
+    component: <Index />,
     layout: '/admin',
   },
   {
     path: '/icons',
     name: 'Icons',
     icon: 'ni ni-planet text-blue',
-    component: <AuthRoute element={<Icons />} />,
+    component: <Icons />,
     layout: '/admin',
   },
   {
     path: '/user-profile',
     name: 'User Profile',
     icon: 'ni ni-single-02 text-yellow',
-    component: <AuthRoute element={<Profile />} />,
+    component: <Profile />,
     layout: '/admin',
   },
   {
@@ -73,7 +72,7 @@ const routes = [
     path: '/account-deletion',
     name: 'Account Deletion',
     icon: 'ni ni-fat-remove text-red',
-    component: <AuthRoute element={<AccountDeletion />} />,
+    component: <AccountDeletion />,
     layout: '/admin',
   },
 ];

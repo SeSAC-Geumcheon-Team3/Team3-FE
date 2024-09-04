@@ -18,7 +18,6 @@ import {
 } from 'reactstrap';
 import UserHeader from 'components/Headers/UserHeader.js';
 import { useNavigate } from 'react-router-dom'; // useNavigate로 변경
-import { useAuth } from 'context/AuthContext'; // AuthContext 사용
 
 const Profile = () => {
   const [modalOpen, setModalOpen] = useState(false); // 비밀번호 확인 모달 상태
@@ -29,14 +28,6 @@ const Profile = () => {
   const [isPasswordChangeMode, setIsPasswordChangeMode] = useState(false); // 비밀번호 변경 모드 활성화 상태
 
   const navigate = useNavigate();
-  const { isAuthenticated, logout } = useAuth(); // AuthContext 사용
-
-  // 로그인 상태 확인
-  React.useEffect(() => {
-    if (!isAuthenticated) {
-      navigate('/login'); // 로그인되지 않았으면 로그인 페이지로 이동
-    }
-  }, [isAuthenticated, navigate]);
 
   const toggleModal = () => setModalOpen(!modalOpen);
 
