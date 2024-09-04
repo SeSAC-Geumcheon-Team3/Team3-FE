@@ -2,7 +2,7 @@
 import React from 'react';
 import Index from 'views/Index.js';
 import Profile from 'views/examples/Profile.js';
-import Register from 'views/Post';
+import Post from 'views/Post';
 import Login from 'views/Login.js';
 import Signup from 'views/Signup';
 import Icons from 'views/examples/Icons.js';
@@ -47,10 +47,10 @@ const routes = [
     layout: '/auth',
   },
   {
-    path: '/register',
-    name: 'Register',
-    icon: 'ni ni-circle-08 text-pink',
-    component: <Register />,
+    path: '/post',
+    name: 'Post',
+    icon: 'ni ni-chat-round',
+    component: <Post />,
     layout: '/auth',
   },
   {
