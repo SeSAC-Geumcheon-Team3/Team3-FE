@@ -269,8 +269,7 @@ const Profile = () => {
                           <label
                             className="form-control-label"
                             htmlFor="input-country"
-                        Postal code
-                          </label>
+                            Postal code=""/>
                           <Input
                             className="form-control-alternative"
                             id="input-postal-code"
