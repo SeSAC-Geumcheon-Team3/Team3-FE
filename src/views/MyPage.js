@@ -17,33 +17,47 @@ import {
 } from 'reactstrap';
 import UserHeader from 'components/Headers/UserHeader.js';
 import { useNavigate } from 'react-router-dom'; // useNavigate로 변경
+import getAuthByPW from 'apis/member/getAuthByPW';
 
 const MyPage = () => {
   const [modalOpen, setModalOpen] = useState(false); // 비밀번호 확인 모달 상태
   const [inputPassword, setInputPassword] = useState(""); // 현재 비밀번호 입력
   const [newPassword, setNewPassword] = useState(""); // 새 비밀번호
   const [confirmNewPassword, setConfirmNewPassword] = useState(""); // 새 비밀번호 확인
-  const [isPasswordVerified, setIsPasswordVerified] = useState(false); // 비밀번호 검증 결과
+  const [isPasswordVerified, setIsPasswordVerified] = useState(false); //비밀번호 확인 여부 검증
   const [isPasswordChangeMode, setIsPasswordChangeMode] = useState(false); // 비밀번호 변경 모드 활성화 상태
 
   const navigate = useNavigate();
 
   const toggleModal = () => setModalOpen(!modalOpen);
 
-  // 비밀번호 확인 로직
+
+  /**
+   * 비밀번호 검증
+   */
   const handlePasswordVerification = () => {
-    const storedPassword = "123456"; // 서버에서 가져온 비밀번호로 대체 필요
-    if (inputPassword === storedPassword) {
-      setIsPasswordVerified(true);
-      setIsPasswordChangeMode(true); // 비밀번호 검증 후 비밀번호 변경 모드 활성화
-      toggleModal();
-    } else {
-      alert("비밀번호가 일치하지 않습니다.");
-    }
+
+    const accessToken="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJfaWR4Ijo0LCJhdXRob3JpdHkiOiJcdWFlMzBcdWJjZjggXHVjMGFjXHVjNmE5XHVjNzkwIiwiaWF0IjoxNzI1NDMyNTMyLjQ1NzY3NjIsImV4cCI6MTcyNTQzNjEzMi40NTc2NzYyfQ.10kJ7kRuddpzNhmpsXw4OLb5E9XuSxj9_9bOqurmsTQ"
+    
+    getAuthByPW(accessToken, inputPassword)
+      .then(res=>{
+        // 비밀번호 검증 후 비밀번호 변경 모드 활성화
+        setIsPasswordVerified(true)
+        setIsPasswordChangeMode(true); 
+        toggleModal();
+    })
+      .catch(err=>{
+        setIsPasswordVerified(true)
+        setInputPassword();
+        setIsPasswordChangeMode(false); 
+        alert("비밀번호가 일치하지 않습니다.");
+
+    })
   };
 
   // 비밀번호 변경 로직
   const handleChangePassword = () => {
+    
     if (!isPasswordVerified) {
       alert("비밀번호 검증이 필요합니다.");
       return;
