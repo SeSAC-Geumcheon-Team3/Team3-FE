@@ -1,15 +1,26 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Card, CardHeader, CardBody, Table, Container, Row, Col, Input, Pagination, PaginationItem, PaginationLink } from "reactstrap";
 import { FaExclamationCircle, FaCheckCircle, FaEdit, FaPlus, FaSearch } from "react-icons/fa";
 import Header from "components/Headers/Header.js";
 import "./ProductList.css";
+import { useRecoilValue } from "recoil";
+import { accessTokenState } from "states/accessTokenAtom";
+import getProductList from "apis/product/getProductList";
 
 const categories = ["식료품 및 음료", "주방 및 조리 용품", "위생 및 청결 용품", "의류 및 세탁 용품", "가구 및 가정용품",
     "건강 및 응급 용품", "개인 관리 용품", "유아 및 육아용품", "반려동물 용품", "일회용품 및 소비재", "전기/전자 기기 및 액세서리"];
 
 
 const ProductList = (props) => {
+
   const [isEditing, setIsEditing] = useState(false);
+
+  const [products, setProducts] = useState([]);   // 물품 정보 저장
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(25);
+  const [totalPage, setTotalPage] = useState(1);
+  const accessToken = useRecoilValue(accessTokenState);
+
   const [items, setItems] = useState([
     { id: 1, name: "휴지", quantity: 20, alerts: 2, lastPurchase: "2024-09-01", category: "위생" },
     { id: 2, name: "핸드 솝", quantity: 15, alerts: 1, lastPurchase: "2024-08-25", category: "위생" },
@@ -31,6 +42,21 @@ const ProductList = (props) => {
     (selectedCategory === "모든 카테고리" || item.category === selectedCategory) &&
     item.name.toLowerCase().includes(searchText.toLowerCase())
   );
+
+  // product 데이터 받아오기
+  const fetchData = async() => {
+    return await getProductList(accessToken, {"page":page, "size":pageSize})
+  }
+
+  useEffect(()=>{
+
+    fetchData().then(res=>{
+      setProducts(res.data.items)
+      setPage(res.data.page)
+      setPageSize(res.data.size)
+      setTotalPage(res.data.totalPage)
+    }).catch(err=>console.log(err))
+  },[])
 
   return (
     <>
