@@ -1,16 +1,23 @@
 // src/routes.js
 import React from 'react';
 import Index from 'views/Index.js';
-import Profile from 'views/examples/Profile.js';
-import Post from 'views/Post';
+import MyPage from 'views/MyPage';
+import Register from 'views/examples/Post';
 import Login from 'views/Login.js';
 import Signup from 'views/Signup';
 import Icons from 'views/examples/Icons.js';
 import FindId from 'views/Findid';
 import FindPw from 'views/Findpw';
 import AccountDeletion from 'views/examples/Accountdeletion'; // 경로 수정
+import PasswordChange from 'views/PasswordChange';
 
 const routes = [
+  {
+    path:'/password',
+    name:'Password Change',
+    component:<PasswordChange/>,
+    layout:'/admin'
+  },
   {
     path: '/index',
     name: 'Dashboard',
@@ -26,10 +33,10 @@ const routes = [
     layout: '/admin',
   },
   {
-    path: '/user-profile',
-    name: 'User Profile',
+    path: '/mypage',
+    name: 'User mypage',
     icon: 'ni ni-single-02 text-yellow',
-    component: <Profile />,
+    component: <MyPage />,
     layout: '/admin',
   },
   {

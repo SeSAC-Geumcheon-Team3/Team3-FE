@@ -59,6 +59,7 @@
     "react-router-dom": "^6.21.1",
     "react-scripts": "5.0.1",
     "reactstrap": "8.10.0",
+    "recoil": "^0.7.7",
     "sass": "1.69.5"
   },
   "devDependencies": {
