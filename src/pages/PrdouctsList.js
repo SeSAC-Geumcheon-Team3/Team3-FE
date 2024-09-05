@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Button, Card, CardHeader, CardBody, Table, Container, Row, Col, Input, Pagination, PaginationItem, PaginationLink } from "reactstrap";
-import { FaExclamationCircle, FaCheckCircle, FaEdit, FaPlus, FaSearch } from "react-icons/fa";
+import { Button, Card, CardHeader, CardBody, Table, Container, Row, Col, Input, Pagination, PaginationItem, PaginationLink, UncontrolledTooltip, FormGroup, InputGroup, InputGroupAddon, InputGroupText } from "reactstrap";
+import { FaExclamationCircle, FaCheckCircle, FaEdit, FaPlus, FaSearch, FaRegSave, FaGooglePlus, FaFolderPlus, FaPlusCircle, FaSave } from "react-icons/fa";
 import Header from "components/Headers/Header.js";
 import "./ProductList.css";
 import { useRecoilValue } from "recoil";
 import { accessTokenState } from "states/accessTokenAtom";
 import getProductList from "apis/product/getProductList";
+import { useNavigate } from "react-router-dom";
+import putProductList from "apis/product/putProductList";
 
 const categories = ["식료품 및 음료", "주방 및 조리 용품", "위생 및 청결 용품", "의류 및 세탁 용품", "가구 및 가정용품",
     "건강 및 응급 용품", "개인 관리 용품", "유아 및 육아용품", "반려동물 용품", "일회용품 및 소비재", "전기/전자 기기 및 액세서리"];
@@ -13,48 +15,81 @@ const categories = ["식료품 및 음료", "주방 및 조리 용품", "위생 
 
 const ProductList = (props) => {
 
+  const navigate = useNavigate();
+
   const [isEditing, setIsEditing] = useState(false);
 
-  const [products, setProducts] = useState([]);   // 물품 정보 저장
-  const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(25);
-  const [totalPage, setTotalPage] = useState(1);
+  const [products, setProducts] = useState([]);                 // 물품 정보 저장
+  const [totalProductsCnt, setTotalProductsCnt] = useState(0);  // 물품 전체 개수 저장
+  const [filteredProducts, setFilteredProducts] = useState([]); // 화면에 보일 물품 정보
   const accessToken = useRecoilValue(accessTokenState);
 
-  const [items, setItems] = useState([
-    { id: 1, name: "휴지", quantity: 20, alerts: 2, lastPurchase: "2024-09-01", category: "위생" },
-    { id: 2, name: "핸드 솝", quantity: 15, alerts: 1, lastPurchase: "2024-08-25", category: "위생" },
-    { id: 3, name: "샴푸", quantity: 10, alerts: 0, lastPurchase: "2024-07-10", category: "헤어케어" },
-  ]);
-  const [searchText, setSearchText] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("모든 카테고리");
+  const [searchText, setSearchText] = useState('');             // 검색어
+  const [selectedCategory, setSelectedCategory] = useState(''); // 카테고리 선택자
+  const categories = ['생필품', '전자제품', '식료품', '가전제품', '선택 안함']; // 옵션 목록
 
-  const toggleEditing = () => {
-    setIsEditing(!isEditing);
+  /** 검색 조건에 맞추어 생필품 리턴 */
+  const filtering = (category,search) => {
+    if (category==='선택 안함'){
+      const filtered = products.filter((prod) => prod.product.includes(search));
+      setFilteredProducts(filtered)
+    }
+    else{
+      const filtered = products.filter((prod) => prod.product.includes(search) && prod.category===category);
+      setFilteredProducts(filtered)
+    }
+  }
+
+  /** 카테고리 select 태그 선택 시 화면에 보이는 productlist 수정 */
+  const handleCategoryChange = (e) => {
+    setSelectedCategory(e.target.value);
+    filtering(e.target.value,searchText);
+  }
+
+  /** 검색어 입력 이벤트 발생 시 생필품 목록 필터링*/
+  const handleSearchInput = (e) => {
+    setSearchText(e.target.value);
+    filtering(selectedCategory,e.target.value);
   };
 
-  const handleSearch = () => {
-    // 검색 기능 구현
-    console.log("Search for:", searchText, "in category:", selectedCategory);
+
+  /** 편집 시 products 상태 업데이트 */ 
+  const handleChangeInput = (index) => (e) => {
+
+    const { name, value } = e.target; // name 속성으로 필드 구분
+
+    // 숫자로 처리해야 하는 필드 이름 목록
+    const numberFields = ['stock', 'limit'];
+
+    // products 배열의 복사본을 생성하여 수정
+    const updatedProducts = [...products];
+
+    updatedProducts[index][name] = numberFields.includes(name) ? Number(value) : value; // 해당 인덱스의 필드 값 변경
+
+    if (Array.isArray(updatedProducts))
+      setProducts(updatedProducts); // 상태 업데이트
   };
 
-  const filteredItems = items.filter(item =>
-    (selectedCategory === "모든 카테고리" || item.category === selectedCategory) &&
-    item.name.toLowerCase().includes(searchText.toLowerCase())
-  );
+  
+  /** 변경사항 저장 버튼 클릭 */
+  const onClickSaveBtn = () => {
+    const data = products.map(({idx,category,stock,limit})=>({idx,category,stock,limit}))
+    putProductList(accessToken, {"data":data}).then(res=>{
+      getProductList(accessToken).then(res=>setProducts(res.data.items))
+      setIsEditing(false);
+    })
+  }
 
   // product 데이터 받아오기
   const fetchData = async() => {
-    return await getProductList(accessToken, {"page":page, "size":pageSize})
+    return await getProductList(accessToken)
   }
 
   useEffect(()=>{
-
     fetchData().then(res=>{
       setProducts(res.data.items)
-      setPage(res.data.page)
-      setPageSize(res.data.size)
-      setTotalPage(res.data.totalPage)
+      setTotalProductsCnt(res.data.totalItems)
+      setFilteredProducts(res.data.items)
     }).catch(err=>console.log(err))
   },[])
 
@@ -64,201 +99,183 @@ const ProductList = (props) => {
       <Container className="mt--7" fluid>
         <Row>
           <Col md="12">
-            <Row className="mb-4">
-              <Col md="4">
-                <Button color="secondary" block size="sm" className="dropdown-toggle">
-                  {selectedCategory}
-                </Button>
-                <div className="dropdown-menu">
-                  {categories.map(category => (
-                    <Button
-                      key={category}
-                      className="dropdown-item"
-                      onClick={() => setSelectedCategory(category)}
-                    >
-                      {category}
-                    </Button>
-                  ))}
-                </div>
-              </Col>
-              <Col md="6">
-                <Input
-                  type="text"
-                  placeholder="아이템 검색..."
-                  value={searchText}
-                  onChange={(e) => setSearchText(e.target.value)}
-                  onKeyPress={(e) => {
-                    if (e.key === 'Enter') {
-                      handleSearch();
-                    }
-                  }}
-                />
-              </Col>
-              <Col md="2" className="text-right">
+            <Row className="mb-4" style={{paddingRight:'10px'}}>
+
+              {/* 수정 버튼 */}
+              <Col className="text-right">
                 <Button
                   color="primary"
                   size="sm"
-                  onClick={handleSearch}
+                  id="prod-list-edit-btn"
+                  onClick={()=>setIsEditing(!isEditing)}
+                  hidden={isEditing}
                 >
-                  <FaSearch size={16} />
+                  <FaEdit size={16} />
                 </Button>
+                <UncontrolledTooltip
+                  placement="top"
+                  target="prod-list-edit-btn"
+                  hidden={isEditing}
+                >
+                  생필품 수정
+                </UncontrolledTooltip>
+
+                {/* 변경사항 저장 버튼 */}
+                <Button
+                  color="secondary"
+                  size="sm"
+                  id="prod-list-save-btn"
+                  hidden={!isEditing}
+                  onClick={onClickSaveBtn}
+                >
+                  <FaSave size={16} />
+                </Button>
+                <UncontrolledTooltip
+                  placement="top"
+                  target="prod-list-save-btn"
+                  hidden={!isEditing}
+                >
+                  변경사항 저장
+                </UncontrolledTooltip>
+
+                {/* 생필품 추가 버튼 */}
+                <Button
+                  color="primary"
+                  size="sm"
+                  onClick={()=>navigate('/admin/add-product')}
+                  id='add-prod-btn'
+                >
+                  <FaPlusCircle size={16} />
+                </Button>
+                <UncontrolledTooltip
+                  delay={0}
+                  placement="top"
+                  target="add-prod-btn"
+                >
+                  생필품 추가
+                </UncontrolledTooltip>
               </Col>
             </Row>
 
             <Card className="shadow">
-              <CardHeader className="border-0">
+              
+              {/* product list board의 헤더 */}
+              <CardHeader className="border-0" style={{paddingBottom:'0'}}>
+
+                <Row class="row_product_search" style={{justifyContent:'space-between',paddingBottom:'0 !important'}} >
+
+                  {/* 카테고리 select */}
+                  <select value={selectedCategory} onChange={handleCategoryChange} class="category_select">
+                    <option value="" disabled selected>카테고리를 선택하세요</option>
+                    {categories.map((cate, idx)=>(
+                      <option key={idx} value={cate}>{cate}</option>
+                    ))}
+                  </select>
+
+                  {/* 검색창 */}
+                  <Col lg='4'>
+                      <InputGroup className="input-group-alternative mb-4">
+                        <Input placeholder="생필품을 검색하세요" type="text" value={searchText} onChange={handleSearchInput} />
+                        <InputGroupAddon addonType="append">
+                          <InputGroupText>
+                            <i className="ni ni-zoom-split-in" />
+                          </InputGroupText>
+                        </InputGroupAddon>
+                      </InputGroup>
+                  </Col>
+                </Row>
+                
                 <Row className="align-items-center">
                   <div className="col">
                     {/* '필수 물품 목록' 텍스트 삭제 */}
                   </div>
                 </Row>
               </CardHeader>
-              <CardBody>
+
+              {/* product 테이블 */}
+              <CardBody style={{paddingTop:'0'}}>
                 <Table className="align-items-center table-flush" responsive>
+                  {/* 테이블 헤더 */}
                   <thead className="thead-light">
                     <tr>
-                      <th scope="col">번호</th>
-                      <th scope="col">상품명</th>
-                      <th scope="col">보유 수량</th>
-                      <th scope="col">알림 수량</th>
-                      <th scope="col">마지막 구매일</th>
-                      <th scope="col">카테고리</th>
-                      <th scope="col">알림</th>
+                      <th scope="col"><big>카테고리</big></th>
+                      <th scope="col"><big>상품명</big></th>
+                      <th scope="col"><big>보유 수량</big></th>
+                      <th scope="col"><big>알림 수량</big></th>
+                      <th scope="col"><big>마지막 구매일</big></th>
                     </tr>
                   </thead>
+
+                  {/* 테이블 본문 */}
                   <tbody>
-                    {filteredItems.map((item) => (
-                      <tr key={item.id}>
-                        <td>{item.id}</td>
+                    {filteredProducts.map((product, idx) => (
+                      <tr>
+                        {/* 카테고리 */}
                         <td>
-                          {isEditing ? (
-                            <Input
-                              type="text"
-                              defaultValue={item.name}
-                              onChange={(e) =>
-                                setItems(
-                                  items.map((i) =>
-                                    i.id === item.id
-                                      ? { ...i, name: e.target.value }
-                                      : i
-                                  )
-                                )
-                              }
-                            />
-                          ) : (
-                            item.name
-                          )}
+                          <Input
+                            type="text"
+                            value={product.category}
+                            name="category"
+                            onChange={handleChangeInput(idx)}
+                            disabled={!isEditing}
+                            className={!isEditing ? 'input-disabled' : ''}
+                          />
                         </td>
+
+                        {/* 상품명 */}
                         <td>
-                          {isEditing ? (
-                            <Input
-                              type="number"
-                              defaultValue={item.quantity}
-                              onChange={(e) =>
-                                setItems(
-                                  items.map((i) =>
-                                    i.id === item.id
-                                      ? { ...i, quantity: e.target.value }
-                                      : i
-                                  )
-                                )
-                              }
-                            />
-                          ) : (
-                            item.quantity
-                          )}
+                          <Input
+                            type="text"
+                            value={product.product}
+                            name="product_name"
+                            onChange={handleChangeInput(idx)}
+                            disabled={!isEditing}
+                            className={!isEditing ? 'input-disabled' : ''}
+                          />
                         </td>
+
+                        {/* 보유수량 */}
                         <td>
-                          {isEditing ? (
-                            <Input
-                              type="number"
-                              defaultValue={item.alerts}
-                              onChange={(e) =>
-                                setItems(
-                                  items.map((i) =>
-                                    i.id === item.id
-                                      ? { ...i, alerts: e.target.value }
-                                      : i
-                                  )
-                                )
-                              }
-                            />
-                          ) : (
-                            item.alerts
-                          )}
+                          <Input
+                            type="number"
+                            defaultValue={product.stock}
+                            name="stock"
+                            onChange={handleChangeInput(idx)}
+                            disabled={!isEditing}
+                            className={!isEditing ? 'input-disabled' : ''}
+                          />
                         </td>
+
+                        {/* 알림 수량 */}
                         <td>
-                          {isEditing ? (
-                            <Input
-                              type="date"
-                              defaultValue={item.lastPurchase}
-                              onChange={(e) =>
-                                setItems(
-                                  items.map((i) =>
-                                    i.id === item.id
-                                      ? { ...i, lastPurchase: e.target.value }
-                                      : i
-                                  )
-                                )
-                              }
-                            />
-                          ) : (
-                            item.lastPurchase
-                          )}
+                          <Input
+                            type="number"
+                            defaultValue={product.limit}
+                            name="limit"
+                            onChange={handleChangeInput(idx)}
+                            disabled={!isEditing}
+                            className={!isEditing ? 'input-disabled' : ''}
+                          />
                         </td>
+
+                        {/* 마지막 구매일 */}
                         <td>
-                          {isEditing ? (
-                            <Input
-                              type="text"
-                              defaultValue={item.category}
-                              onChange={(e) =>
-                                setItems(
-                                  items.map((i) =>
-                                    i.id === item.id
-                                      ? { ...i, category: e.target.value }
-                                      : i
-                                  )
-                                )
-                              }
-                            />
-                          ) : (
-                            item.category
-                          )}
+                          <Input
+                            type="date"
+                            defaultValue={product.update_date}
+                            name="update_date"
+                            onChange={handleChangeInput(idx)}
+                            disabled={!isEditing}
+                            className={!isEditing ? 'input-disabled' : ''}
+                          />
                         </td>
-                        <td>
-                          {item.alerts > 0 ? (
-                            <FaExclamationCircle style={{ color: 'red' }} />
-                          ) : (
-                            <FaCheckCircle style={{ color: 'green' }} />
-                          )}
-                        </td>
+
                       </tr>
                     ))}
                   </tbody>
                 </Table>
               </CardBody>
             </Card>
-          </Col>
-        </Row>
-        <Row className="mt-4">
-          <Col md="12" className="text-center">
-            <Pagination>
-              <PaginationItem disabled>
-                <PaginationLink previous href="#pablo" />
-              </PaginationItem>
-              <PaginationItem active>
-                <PaginationLink href="#pablo">1</PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink href="#pablo">2</PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink href="#pablo">3</PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink next href="#pablo" />
-              </PaginationItem>
-            </Pagination>
           </Col>
         </Row>
       </Container>
