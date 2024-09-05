@@ -16,3 +16,18 @@ export const apiInstance = (accessToken) =>{
 
   return instance;
 };
+
+export const fileApiInstance = (accessToken) => {
+  
+  const instance = axios.create({
+    baseURL: base_URL,
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+
+  interceptors(instance, accessToken)
+
+  return instance;
+
+}

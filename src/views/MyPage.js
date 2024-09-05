@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Button,
   Card,
@@ -27,6 +27,7 @@ import putMemberInfo from 'apis/member/putMemberInfo';
 import getAuthByPW from 'apis/member/getAuthByPW';
 import getMemberInfo from 'apis/member/getMemberInfo';
 import Datepicker from 'components/Members/Datepicker';
+import postProfile from 'apis/member/postProfile';
 
 const MyPage = () => {
   const [modalOpen, setModalOpen] = useState(false);      // 비밀번호 확인 모달
@@ -35,6 +36,8 @@ const MyPage = () => {
 
   const accessToken = useRecoilValue(accessTokenState); // 토큰값
   
+  const basicProfile= 'https://stickershop.line-scdn.net/stickershop/v1/product/1345501/LINEStorePC/main.png?v=1';
+
   const [changeMemberInfo, setChangeMemberInfo] = useState(false);  //사용자 정보 수정 상태(활성화:true, 비활성화:false)  
   const [profile, setProfile] = useState("");
   const [email, setEmail] = useState("");
@@ -45,6 +48,10 @@ const MyPage = () => {
   const [sex, setSex] = useState("");
   const [household, setHousehold] = useState(0);
   const [notice, setNotice] = useState(false);
+
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [profileEdit, setProfileEdit] = useState(false);
+  const fileInputRef = useRef(null);
 
   const navigate = useNavigate();
 
@@ -93,6 +100,27 @@ const MyPage = () => {
     setNotice(!notice)
   }
 
+  //프로필 이미지 수정 버튼클릭
+  const onClickProfileEditBtn = () =>{
+    setProfileEdit(true);
+    fileInputRef.current.click()
+  }
+  // 파일 선택 핸들러
+  const handleFileChange = (event) => {
+    setSelectedFile(event.target.files[0]);
+  };
+  // 파일 전송 버튼 클릭
+  const handlePostFileBtn = () => {
+    const data = new FormData();
+    data.append('profile_image',selectedFile);
+    postProfile(accessToken, data)
+    window.location.href='/admin/mypage'; // 절대 경로를 사용하여 이동
+  }
+  // 파일 다운로드 클릭 
+  const onClickDownloadProfile = () => {
+
+  }
+
   /**
    * 회원정보 수정 버튼 클릭
    */
@@ -102,7 +130,6 @@ const MyPage = () => {
       "email":email,
       "nickname":nickname,
       "phone":phone,
-      "profile_img":profile,
       "birth":birth,
       "sex":sex,
       "household":household,
@@ -131,7 +158,7 @@ const MyPage = () => {
   useEffect(()=>{
     
     fetchData().then(res=>{
-
+      console.log(res.data)
       // 사용자 정보 state에 입력
       setEmail(res.data.email);
       setName(res.data.name);
@@ -141,7 +168,7 @@ const MyPage = () => {
       setSex(res.data.sex);
       setHousehold(res.data.household);
       setNotice(res.data.notice);
-
+      setProfile(res.data.profile_img)
     }).catch(err=> console.log(err))
 
   },[])
@@ -156,14 +183,38 @@ const MyPage = () => {
             <Card className="card-profile shadow">
               {/* 기존 프로필 정보 */}
               <CardBody className="pt-0 pt-md-4">
-                
-                <div className={styles.profileHolder}>
-                  <img src={profile||'https://stickershop.line-scdn.net/stickershop/v1/product/1345501/LINEStorePC/main.png?v=1'} style={{ width: '200px', height: '200px', objectFit: 'cover' }} alt="profile"  />
-                </div>
-                
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleFileChange}
+                  style={{ display: 'none' }}
+                />
+                {profileEdit ? (
+                  <>
+                    <Button color="primary" size="sm" type="button" onClick={handlePostFileBtn}>
+                      수정 확인
+                    </Button>
+                    <div className={styles.profileHolder}>
+                    <img src={URL.createObjectURL(selectedFile)} style={{ width: '200px', height: '200px', objectFit: 'cover' }}/>
+                    </div>
+                  </>
+                ):(
+                  <>
+                    <Button color="primary" size="sm" type="button" onClick={onClickProfileEditBtn}>
+                      사진 수정하기
+                    </Button>
+                    <Button color="primary" size="sm" type="button" onClick={onClickDownloadProfile}>
+                      사진 다운로드받기
+                    </Button>
+                    <div className={styles.profileHolder}>
+                    <img src={profile} style={{ width: '200px', height: '200px', objectFit: 'cover' }}/>
+                    </div>
+                  </>
+                )}
+
                 <div className="text-center">
                   <h3>{name}</h3>
-
+                  <hr></hr>
                   {/* 회원 탈퇴 버튼 */}
                   <div className="my-3">
                     <Button color="danger" onClick={handleAccountDeletion} style={{width:'40%'}}>
