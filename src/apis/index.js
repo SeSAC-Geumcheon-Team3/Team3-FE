@@ -17,6 +17,19 @@ export const apiInstance = (accessToken) =>{
   return instance;
 };
 
+export const basicApiInstance = () =>{
+  
+  const instance = axios.create({
+    baseURL: base_URL,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  return instance;
+
+}
+
 export const fileApiInstance = (accessToken) => {
   
   const instance = axios.create({
@@ -32,15 +45,16 @@ export const fileApiInstance = (accessToken) => {
 
 }
 
-export const fileReqApiInstance = (accessToken) =>{
+export const fileReqApiInstance = (accessToken) => {
   
   const instance = axios.create({
     baseURL: base_URL,
     headers: {
       "Content-Type": "application/json",
     },
-    responseType: 'blob', // 응답 형식을 blob으로 설정
   });
+
+  responseType: 'blob', // 응답 형식을 blob으로 설정
 
   interceptors(instance, accessToken)
 
