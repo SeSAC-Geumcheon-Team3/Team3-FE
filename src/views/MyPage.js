@@ -106,17 +106,32 @@ const MyPage = () => {
   }
   // 파일 선택 핸들러
   const handleFileChange = (event) => {
+    setProfile(URL.createObjectURL(event.target.files[0]))
     setSelectedFile(event.target.files[0]);
   };
   // 파일 전송 버튼 클릭
   const handlePostFileBtn = () => {
     const data = new FormData();
     data.append('profile_image',selectedFile);
-    postProfile(accessToken, data)
-    window.location.href='/admin/mypage'; // 절대 경로를 사용하여 이동
+    postProfile(accessToken, data).then(res=>{
+      alert(res.data.message);
+      window.location.href='/admin/mypage';
+    }).catch(err=>console.log(err))
   }
   // 파일 다운로드 클릭 
   const onClickDownloadProfile = () => {
+    if (!profile) {
+      alert("다운로드할 파일이 없습니다.");
+      return;
+    }
+  
+    // a 태그 생성
+    const link = document.createElement('a');
+    link.href = profile; // profile 변수에 있는 이미지 URL 사용
+    link.download = 'profile_image.jpg'; // 다운로드될 파일명 설정
+    document.body.appendChild(link);
+    link.click(); // a 태그 클릭하여 다운로드 실행
+    document.body.removeChild(link); // a 태그 제거하여 클린업
 
   }
 
@@ -199,9 +214,6 @@ const MyPage = () => {
                     <Button color="primary" size="sm" type="button" onClick={handlePostFileBtn}>
                       수정 확인
                     </Button>
-                    <div className={styles.profileHolder}>
-                    <img src={URL.createObjectURL(selectedFile)} style={{ width: '200px', height: '200px', objectFit: 'cover' }}/>
-                    </div>
                   </>
                 ):(
                   <>
@@ -211,11 +223,11 @@ const MyPage = () => {
                     <Button color="primary" size="sm" type="button" onClick={onClickDownloadProfile}>
                       사진 다운로드받기
                     </Button>
-                    <div className={styles.profileHolder}>
-                    <img src={profile} style={{ width: '200px', height: '200px', objectFit: 'cover' }}/>
-                    </div>
                   </>
                 )}
+                <div className={styles.profileHolder}>
+                  <img src={profile} style={{ width: '200px', height: '200px', objectFit: 'cover' }}/>
+                </div>
 
                 <div className="text-center">
                   <h3>{name}</h3>
