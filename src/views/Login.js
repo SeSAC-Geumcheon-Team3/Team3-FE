@@ -89,14 +89,14 @@ const Login = () => {
         <Row className="mt-3">
           <Col xs="6">
             <a
-              className="text-light"
-              href="#pablo"
-              onClick={(e) => {
-                e.preventDefault();
-                handleFindPw(); // 클릭 시 handleFindPw 함수 호출
-              }}
-            >
-              <small>비밀번호를 까먹었나요?</small>
+                className="text-light"
+                href="#pablo"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleFindId(); // 클릭 시 handleFindId 함수 호출
+                }}
+              >
+              <small>ID를 까먹었나요?</small>
             </a>
           </Col>
           <Col className="text-right" xs="6">
@@ -105,10 +105,10 @@ const Login = () => {
               href="#pablo"
               onClick={(e) => {
                 e.preventDefault();
-                handleFindId(); // 클릭 시 handleFindId 함수 호출
+                handleFindPw(); // 클릭 시 handleFindPw 함수 호출
               }}
             >
-              <small>ID를 까먹었나요?</small>
+              <small>비밀번호를 까먹었나요?</small>
             </a>
           </Col>
         </Row>

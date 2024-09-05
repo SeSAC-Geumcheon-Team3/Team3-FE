@@ -69,7 +69,7 @@ export default function PasswordChange(){
                                     value={newPW}
                                     id="new-pw"
                                     placeholder="새로운 비밀번호를 입력하세요"
-                                    type="text"
+                                    type="password"
                                     onChange={handleNewPW}
                                 />
                                 </FormGroup>
@@ -82,9 +82,9 @@ export default function PasswordChange(){
                                     <Input
                                         className="form-control-alternative"
                                         value={confirmPW}
-                                        id="input-first-name"
+                                        id="confirm-new-pw"
                                         placeholder="동일한 비밀번호를 입력하세요"
-                                        type="text"
+                                        type="password"
                                         onChange={handleConfirmPW}
                                     />
                                 </FormGroup>

@@ -1,10 +1,13 @@
 
 import React, { useState } from 'react';
-import { Button, Card, CardHeader, CardBody, FormGroup, Form, Input, InputGroup, InputGroupText, Col, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { Button, Card, CardHeader, CardBody, FormGroup, Form, Input, InputGroup, InputGroupText, Col, Modal, ModalHeader, ModalBody, ModalFooter, Row } from 'reactstrap';
 import postFindId from 'apis/auth/postFindId';
 import './FindId.css'; // CSS 파일을 import 합니다.
+import { useNavigate } from 'react-router-dom';
 
 const FindId = () => {
+
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
     phone: ''
@@ -21,6 +24,16 @@ const FindId = () => {
       ...formData,
       [name]: value,
     });
+  };
+
+  // "Forgot id?" 클릭 핸들러 함수
+  const handleFindId = () => {
+    navigate('/auth/findid');
+  };
+
+  // "Forgot password?" 클릭 핸들러 함수
+  const handleFindPw = () => {
+    navigate('/auth/findpw');
   };
 
   const handleSubmit = async (e) => {
@@ -96,6 +109,32 @@ const FindId = () => {
           </Form>
         </CardBody>
       </Card>
+      <Row className="mt-3">
+          <Col xs="6">
+            <a
+                className="text-light"
+                href="#pablo"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleFindId(); // 클릭 시 handleFindId 함수 호출
+                }}
+              >
+              <small>ID를 까먹었나요?</small>
+            </a>
+          </Col>
+          <Col className="text-right" xs="6">
+            <a
+              className="text-light"
+              href="#pablo"
+              onClick={(e) => {
+                e.preventDefault();
+                handleFindPw(); // 클릭 시 handleFindPw 함수 호출
+              }}
+            >
+              <small>비밀번호를 까먹었나요?</small>
+            </a>
+          </Col>
+        </Row>
 
       {/* 모달 창 */}
       <Modal isOpen={modal} toggle={toggleModal}>
@@ -104,7 +143,7 @@ const FindId = () => {
           {modalContent}
         </ModalBody>
         <ModalFooter>
-          <Button color="primary" onClick={toggleModal}>확인</Button>
+          <Button color="primary" onClick={navigate('/auth/login')}>확인</Button>
         </ModalFooter>
       </Modal>
     </Col>

@@ -13,6 +13,11 @@ const FindPw = () => {
   
   const setPwChangeAuth = useSetRecoilState(pwResetAuthState);
 
+  const onClickSignUp = () => {navigate('/auth/signup')}
+
+  /**
+   * 비밀번호 찾기
+   */
   const handleFindPw = () => {
     
     const data = {
@@ -39,40 +44,8 @@ const FindPw = () => {
         </CardHeader>
         <CardBody className="px-lg-5 py-lg-5">
           <Form role="form">
-            <FormGroup className="mb-0">
+            <FormGroup className="mb-3">
               <InputGroup className="input-group-alternative mb-3">
-                <InputGroupAddon addonType="prepend">
-                  <InputGroupText>
-                    <i className="ni ni-user" />
-                  </InputGroupText>
-                </InputGroupAddon>
-                <Input
-                  placeholder="Name"
-                  type="text"
-                  autoComplete="new-name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                />
-              </InputGroup>
-            </FormGroup>
-            <FormGroup className="mb-3">
-              <InputGroup className="input-group-alternative">
-                <InputGroupAddon addonType="prepend">
-                  <InputGroupText>
-                    <i className="ni ni-mobile-button" />
-                  </InputGroupText>
-                </InputGroupAddon>
-                <Input
-                  placeholder="Phone Number"
-                  type="text"
-                  autoComplete="new-phone"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                />
-              </InputGroup>
-            </FormGroup>
-            <FormGroup className="mb-3">
-              <InputGroup className="input-group-alternative">
                 <InputGroupAddon addonType="prepend">
                   <InputGroupText>
                     <i className="ni ni-email-83" />
@@ -128,13 +101,13 @@ const FindPw = () => {
       </Card>
       <Row className="mt-4">
         <Col className="text-center">
-          <Button className="my-2" color="link" onClick={handleForgotId}>
-            Forgot ID?
+          <Button className="my-2" color="link" onClick={navigate('/auth/login')}>
+            로그인 하러 가기
           </Button>
         </Col>
         <Col className="text-center">
-          <Button className="my-2" color="link" onClick={handleSignUp}>
-            Sign Up
+          <Button className="my-2" color="link" onClick={onClickSignUp}>
+            회원가입 하러 가기
           </Button>
         </Col>
       </Row>

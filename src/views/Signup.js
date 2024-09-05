@@ -92,9 +92,9 @@ const Signup = () => {
     <>
       <Col lg="6" md="8">
         <Card className="bg-secondary shadow border-0">
-          <CardHeader className="bg-transparent pb-5">
-            <div className="text-center mt-2 mb-3">
-              <small>회원가입</small>
+          <CardHeader className="bg-transparent">
+            <div className="text-center mt-2 mb-1">
+              <big>회원가입</big>
             </div>
           </CardHeader>
           <CardBody className="px-lg-5 py-lg-5">
@@ -102,11 +102,11 @@ const Signup = () => {
               <FormGroup className="mb-3">
                 <InputGroup className="input-group-alternative">
                   <InputGroupText>
-                    <i className="ni ni-user" />
+                    <i className="ni ni-circle-08" />
                   </InputGroupText>
                   <Input
                     name="name"
-                    placeholder="Name"
+                    placeholder="이름"
                     type="text"
                     autoComplete="new-name"
                     value={formData.name}
@@ -121,7 +121,7 @@ const Signup = () => {
                   </InputGroupText>
                   <Input
                     name="email"
-                    placeholder="Email"
+                    placeholder="이메일"
                     type="email"
                     autoComplete="new-email"
                     value={formData.email}
@@ -136,7 +136,7 @@ const Signup = () => {
                   </InputGroupText>
                   <Input
                     name="password"
-                    placeholder="Password"
+                    placeholder="비밀번호"
                     type="password"
                     autoComplete="new-password"
                     value={formData.password}
@@ -147,11 +147,11 @@ const Signup = () => {
               <FormGroup className="mb-3">
                 <InputGroup className="input-group-alternative">
                   <InputGroupText>
-                    <i className="ni ni-hat-3" />
+                    <i className="ni ni-satisfied" />
                   </InputGroupText>
                   <Input
                     name="nickname"
-                    placeholder="Nickname"
+                    placeholder="닉네임"
                     type="text"
                     autoComplete="new-nickname"
                     value={formData.nickname}
@@ -166,7 +166,7 @@ const Signup = () => {
                   </InputGroupText>
                   <Input
                     name="phone"
-                    placeholder="Phone Number"
+                    placeholder="전화번호"
                     type="text"
                     autoComplete="new-phonenumber"
                     value={formData.phone}
@@ -181,9 +181,9 @@ const Signup = () => {
                   value={formData.sex}
                   onChange={handleChange}
                 >
-                  <option value="">Select Gender</option>
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
+                  <option value="">성별</option>
+                  <option value="male">남성</option>
+                  <option value="female">여성</option>
                 </Input>
               </FormGroup>
               <FormGroup className="mb-3">
@@ -197,7 +197,7 @@ const Signup = () => {
               <FormGroup className="mb-3">
                 <Input
                   name="household"
-                  placeholder="Number of Family Members"
+                  placeholder="가구수"
                   type="number"
                   min="0" // 최소값을 0으로 설정
                   value={formData.household}
@@ -209,14 +209,14 @@ const Signup = () => {
                   type="checkbox"
                   id="notice"
                   name="notice"
-                  label="I agree to receive notifications"
+                  label="이메일 수신을 위한 개인정보 제공에 동의합니다"
                   checked={formData.notice}
                   onChange={handleChange}
                 />
               </FormGroup>
               <div className="text-center">
                 <Button className="my-4" color="primary" type="submit">
-                  Sign Up
+                  회원가입
                 </Button>
               </div>
             </Form>
@@ -227,9 +227,9 @@ const Signup = () => {
             <a
               className="text-light"
               href="#pablo"
-              onClick={(e) => e.preventDefault()}
+              onClick={navigate('/auth/login')}
             >
-              <small>Already have an account? Login</small>
+              <small>계정이 있으신가요? &nbsp;로그인 하러 가기</small>
             </a>
           </Col>
         </Row>

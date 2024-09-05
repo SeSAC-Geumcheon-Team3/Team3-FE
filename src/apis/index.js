@@ -27,6 +27,7 @@ export const basicApiInstance = () =>{
   });
 
   return instance;
+}
 
 export const fileApiInstance = (accessToken) => {
   
