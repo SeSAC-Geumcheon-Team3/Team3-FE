@@ -7,21 +7,21 @@ import {
   FormGroup,
   Form,
   Input,
-  InputGroupAddon,
-  InputGroupText,
   InputGroup,
+  InputGroupText,
   Row,
   Col,
   CustomInput,
 } from 'reactstrap';
 import { useNavigate } from 'react-router-dom'; // react-router-dom 버전 6 이상
+import postSignup from 'apis/auth/postSignUp'; // 경로를 올바르게 변경
 
 const Signup = () => {
   const navigate = useNavigate(); // useNavigate 훅을 사용하여 리디렉션 처리
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    pw: '',
+    password: '',
     nickname: '',
     phone: '',
     notice: false,
@@ -41,10 +41,17 @@ const Signup = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // 모든 입력 필드가 채워졌는지 확인
-    const isFormValid = Object.values(formData).every(field => 
-      field !== '' && field !== false // 필드가 빈 문자열이거나 false(체크 박스)인 경우
-    );
+    // 모든 입력 필드가 채워졌는지 확인 (체크 박스 제외)
+    const isFormValid = [
+      formData.name,
+      formData.email,
+      formData.password,
+      formData.nickname,
+      formData.phone,
+      formData.birth,
+      formData.sex,
+      formData.household,
+    ].every(field => field.trim() !== ''); // 공백 문자열을 제외
 
     // 체크 박스가 체크되지 않은 경우 경고 메시지
     if (!formData.notice) {
@@ -58,9 +65,27 @@ const Signup = () => {
       return;
     }
 
-    // 여기에 회원가입 처리 로직을 추가합니다 (예: 서버로 POST 요청)
-    alert('회원가입이 완료되었습니다! 로그인 페이지로 리디렉션합니다.');
-    navigate('/login'); // 로그인 페이지로 리디렉션
+    // formData를 서버에 전송
+    postSignup(
+      {
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+        nickname: formData.nickname,
+        phone: formData.phone,
+        notice: formData.notice ? "True" : "False",
+        birth: formData.birth,
+        household: formData.household,
+      },
+      (response) => {
+        alert('회원가입이 완료되었습니다! 로그인 페이지로 리디렉션합니다.');
+        navigate('/login'); // 로그인 페이지로 리디렉션
+      },
+      (error) => {
+        console.error('회원가입 오류:', error);
+        alert('회원가입에 실패했습니다. 다시 시도해주세요.');
+      }
+    );
   };
 
   return (
@@ -76,11 +101,9 @@ const Signup = () => {
             <Form onSubmit={handleSubmit} role="form">
               <FormGroup className="mb-3">
                 <InputGroup className="input-group-alternative">
-                  <InputGroupAddon addonType="prepend">
-                    <InputGroupText>
-                      <i className="ni ni-user" />
-                    </InputGroupText>
-                  </InputGroupAddon>
+                  <InputGroupText>
+                    <i className="ni ni-user" />
+                  </InputGroupText>
                   <Input
                     name="name"
                     placeholder="Name"
@@ -93,11 +116,9 @@ const Signup = () => {
               </FormGroup>
               <FormGroup className="mb-3">
                 <InputGroup className="input-group-alternative">
-                  <InputGroupAddon addonType="prepend">
-                    <InputGroupText>
-                      <i className="ni ni-email-83" />
-                    </InputGroupText>
-                  </InputGroupAddon>
+                  <InputGroupText>
+                    <i className="ni ni-email-83" />
+                  </InputGroupText>
                   <Input
                     name="email"
                     placeholder="Email"
@@ -110,28 +131,24 @@ const Signup = () => {
               </FormGroup>
               <FormGroup className="mb-3">
                 <InputGroup className="input-group-alternative">
-                  <InputGroupAddon addonType="prepend">
-                    <InputGroupText>
-                      <i className="ni ni-lock-circle-open" />
-                    </InputGroupText>
-                  </InputGroupAddon>
+                  <InputGroupText>
+                    <i className="ni ni-lock-circle-open" />
+                  </InputGroupText>
                   <Input
-                    name="pw"
+                    name="password"
                     placeholder="Password"
                     type="password"
                     autoComplete="new-password"
-                    value={formData.pw}
+                    value={formData.password}
                     onChange={handleChange}
                   />
                 </InputGroup>
               </FormGroup>
               <FormGroup className="mb-3">
                 <InputGroup className="input-group-alternative">
-                  <InputGroupAddon addonType="prepend">
-                    <InputGroupText>
-                      <i className="ni ni-hat-3" />
-                    </InputGroupText>
-                  </InputGroupAddon>
+                  <InputGroupText>
+                    <i className="ni ni-hat-3" />
+                  </InputGroupText>
                   <Input
                     name="nickname"
                     placeholder="Nickname"
@@ -144,11 +161,9 @@ const Signup = () => {
               </FormGroup>
               <FormGroup className="mb-3">
                 <InputGroup className="input-group-alternative">
-                  <InputGroupAddon addonType="prepend">
-                    <InputGroupText>
-                      <i className="ni ni-mobile-button" />
-                    </InputGroupText>
-                  </InputGroupAddon>
+                  <InputGroupText>
+                    <i className="ni ni-mobile-button" />
+                  </InputGroupText>
                   <Input
                     name="phone"
                     placeholder="Phone Number"
@@ -184,6 +199,7 @@ const Signup = () => {
                   name="household"
                   placeholder="Number of Family Members"
                   type="number"
+                  min="0" // 최소값을 0으로 설정
                   value={formData.household}
                   onChange={handleChange}
                 />

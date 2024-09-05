@@ -2,7 +2,7 @@
 import React from 'react';
 import Index from 'views/Index.js';
 import MyPage from 'views/MyPage';
-import Register from 'views/examples/Post';
+import Register from 'views/Post';
 import Login from 'views/Login.js';
 import Signup from 'views/Signup';
 import Icons from 'views/examples/Icons.js';
@@ -57,7 +57,7 @@ const routes = [
     path: '/post',
     name: 'Post',
     icon: 'ni ni-chat-round',
-    component: <Post />,
+    component: <post />,
     layout: '/auth',
   },
   {
