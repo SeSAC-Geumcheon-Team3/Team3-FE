@@ -11,6 +11,7 @@ import FindPw from 'views/Findpw';
 import AccountDeletion from 'views/examples/Accountdeletion'; // 경로 수정
 import PasswordChange from 'views/PasswordChange';
 import AddProduct from 'views/Addproduct';
+import AdminDetail from 'views/Admindetail';
 
 const routes = [
   {
@@ -87,6 +88,13 @@ const routes = [
     name: 'Add Product',
     icon: 'ni ni-circle-08 text-pink',
     component: <AddProduct />,
+    layout: '/admin',
+  },
+  {
+    path: '/admin-detail',
+    name: 'Admin Detail',
+    icon: 'ni ni-fat-remove text-red',
+    component: <AdminDetail />,
     layout: '/admin',
   },
 ];

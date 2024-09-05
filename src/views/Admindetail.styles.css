@@ -1,0 +1,73 @@
+/* 컨테이너 스타일 */
+.container {
+    margin-top: 20px;
+}
+
+/* 왼쪽 카드 고정 높이 */
+.fixedCard {
+    height: 400px;
+}
+
+
+/* 오른쪽 카드 동적 높이 */
+.dynamicCard {
+    height: auto;
+}
+
+/* 테이블 스타일 */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* 테이블 헤더 스타일 */
+.table thead {
+    background-color: #f8f9fa;
+}
+
+/* 테이블 셀 스타일 */
+.table th, .table td {
+    text-align: center;
+    padding: 8px;
+    border: 1px solid #dee2e6;
+}
+
+/* 페이지네이션 스타일 */
+.pagination {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* 페이지네이션 항목 스타일 */
+.page-item {
+    margin: 0 5px;
+}
+
+/* 페이지네이션 링크 스타일 */
+.page-link {
+    color: #000;
+    padding: 8px 16px;
+    text-align: center;
+    text-decoration: none;
+    border: none;
+}
+
+/* 활성 페이지 스타일 */
+.page-item.active .page-link {
+    background-color: #000;
+    color: #fff;
+}
+
+/* Previous 및 Next 버튼 스타일 */
+.page-item:first-child .page-link {
+    color: #000;
+    border: none;
+}
+
+.page-item:last-child .page-link {
+    color: #000;
+    border: none;
+}
+
