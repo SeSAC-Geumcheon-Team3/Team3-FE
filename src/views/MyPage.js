@@ -28,6 +28,7 @@ import getAuthByPW from 'apis/member/getAuthByPW';
 import getMemberInfo from 'apis/member/getMemberInfo';
 import Datepicker from 'components/Members/Datepicker';
 import postProfile from 'apis/member/postProfile';
+import getProfile from 'apis/member/getProfile';
 
 const MyPage = () => {
   const [modalOpen, setModalOpen] = useState(false);      // 비밀번호 확인 모달
@@ -35,8 +36,6 @@ const MyPage = () => {
   const [isPasswordVerified, setIsPasswordVerified] = useState(false);  //비밀번호 확인 여부 검증
 
   const accessToken = useRecoilValue(accessTokenState); // 토큰값
-  
-  const basicProfile= 'https://stickershop.line-scdn.net/stickershop/v1/product/1345501/LINEStorePC/main.png?v=1';
 
   const [changeMemberInfo, setChangeMemberInfo] = useState(false);  //사용자 정보 수정 상태(활성화:true, 비활성화:false)  
   const [profile, setProfile] = useState("");
@@ -153,12 +152,15 @@ const MyPage = () => {
     return await getMemberInfo(accessToken)
   }
 
+  const fetchProfile = async () =>{
+    return await getProfile(accessToken)
+  }
+
 
   // memberInfo에 변화가 생길 때 마다 페이지 새로고침
   useEffect(()=>{
     
     fetchData().then(res=>{
-      console.log(res.data)
       // 사용자 정보 state에 입력
       setEmail(res.data.email);
       setName(res.data.name);
@@ -168,8 +170,11 @@ const MyPage = () => {
       setSex(res.data.sex);
       setHousehold(res.data.household);
       setNotice(res.data.notice);
-      setProfile(res.data.profile_img)
     }).catch(err=> console.log(err))
+
+    fetchProfile().then(res=>{
+      setProfile(URL.createObjectURL(res.data))
+    })
 
   },[])
 
