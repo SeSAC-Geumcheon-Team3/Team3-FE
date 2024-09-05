@@ -11,6 +11,7 @@ import AccountDeletion from 'views/examples/Accountdeletion'; // 경로 수정
 import PasswordChange from 'views/PasswordChange';
 import ProductList from "pages/PrdouctsList";
 import AddProduct from 'views/Addproduct';
+import AdminDetail from 'views/Admindetail';
 
 var routes = [
   {
@@ -80,6 +81,13 @@ var routes = [
     name: '생필품 추가',
     icon: 'ni ni-circle-08 text-pink',
     component: <AddProduct />,
+    layout: '/admin',
+  },
+  {
+    path: '/admin-detail',
+    name: 'Admin Detail',
+    icon: 'ni ni-fat-remove text-red',
+    component: <AdminDetail />,
     layout: '/admin',
   },
 ];
