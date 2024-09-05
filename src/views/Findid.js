@@ -1,20 +1,19 @@
+
 import React, { useState } from 'react';
-import { Button, Card, CardHeader, CardBody, FormGroup, Form, Input, InputGroupAddon, InputGroupText, InputGroup, Col, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
-import { useNavigate } from 'react-router-dom'; // react-router-dom 버전 6 이상
+import { Button, Card, CardHeader, CardBody, FormGroup, Form, Input, InputGroup, InputGroupText, Col, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import postFindId from 'apis/auth/postFindId';
+import './FindId.css'; // CSS 파일을 import 합니다.
 
 const FindId = () => {
   const [formData, setFormData] = useState({
     name: '',
-    phone: '',
-    email: '',
+    phone: ''
   });
 
   const [modal, setModal] = useState(false);
   const [modalContent, setModalContent] = useState('');
 
   const toggleModal = () => setModal(!modal);
-
-  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -26,31 +25,26 @@ const FindId = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    if (!formData.name || !formData.phone || !formData.email) {
-      alert('모든 필드를 입력해주세요.');
+  
+    if (!formData.name || !formData.phone) {
+      alert('이름과 전화번호를 입력해주세요.');
       return;
     }
-
+  
     try {
-      const mockResponse = getMockEmail(formData.name, formData.phone, formData.email);
-      const { email } = mockResponse;
-
-      setModalContent(`등록된 이메일: ${email}`);
+      const response = await postFindId(formData.name, formData.phone);
+      const { email } = response; // 응답에서 이메일 추출
+  
+      if (email) {
+        setModalContent(`등록된 이메일: ${email}`);
+      } else {
+        setModalContent('등록된 이메일이 없습니다.');
+      }
       toggleModal(); // 모달 열기
     } catch (error) {
       console.error('아이디 찾기 요청 중 오류 발생:', error);
-      alert('아이디 찾기 요청 중 오류가 발생했습니다.');
-    }
-  };
-
-  const getMockEmail = (name, phone, email) => {
-    if (name === '홍길동' && phone === '1234567890' && email === 'honggildong@example.com') {
-      return { email: 'honggildong@example.com' };
-    } else if (name === '김철수' && phone === '0987654321' && email === 'kimcheolsu@example.com') {
-      return { email: 'kimcheolsu@example.com' };
-    } else {
-      return { email: 'unknown@example.com' };
+      setModalContent('아이디 찾기 요청 중 오류가 발생했습니다.');
+      toggleModal(); // 모달 열기
     }
   };
 
@@ -59,18 +53,16 @@ const FindId = () => {
       <Card className="bg-secondary shadow border-0">
         <CardHeader className="bg-transparent pb-5">
           <div className="text-center mt-2 mb-3">
-            <small>아이디 찾기</small>
+            <small className="find-id-title">아이디 찾기</small>
           </div>
         </CardHeader>
         <CardBody className="px-lg-5 py-lg-5">
           <Form onSubmit={handleSubmit} role="form">
             <FormGroup className="mb-3">
               <InputGroup className="input-group-alternative">
-                <InputGroupAddon addonType="prepend">
-                  <InputGroupText>
-                    <i className="ni ni-user" />
-                  </InputGroupText>
-                </InputGroupAddon>
+                <InputGroupText>
+                  <i className="ni ni-user" />
+                </InputGroupText>
                 <Input
                   name="name"
                   placeholder="이름"
@@ -83,34 +75,15 @@ const FindId = () => {
             </FormGroup>
             <FormGroup className="mb-3">
               <InputGroup className="input-group-alternative">
-                <InputGroupAddon addonType="prepend">
-                  <InputGroupText>
-                    <i className="ni ni-mobile-button" />
-                  </InputGroupText>
-                </InputGroupAddon>
+                <InputGroupText>
+                  <i className="ni ni-mobile-button" />
+                </InputGroupText>
                 <Input
                   name="phone"
                   placeholder="전화번호"
                   type="text"
                   autoComplete="new-phone"
                   value={formData.phone}
-                  onChange={handleChange}
-                />
-              </InputGroup>
-            </FormGroup>
-            <FormGroup className="mb-3">
-              <InputGroup className="input-group-alternative">
-                <InputGroupAddon addonType="prepend">
-                  <InputGroupText>
-                    <i className="ni ni-email-83" />
-                  </InputGroupText>
-                </InputGroupAddon>
-                <Input
-                  name="email"
-                  placeholder="이메일"
-                  type="email"
-                  autoComplete="new-email"
-                  value={formData.email}
                   onChange={handleChange}
                 />
               </InputGroup>
@@ -126,7 +99,7 @@ const FindId = () => {
 
       {/* 모달 창 */}
       <Modal isOpen={modal} toggle={toggleModal}>
-        <ModalHeader toggle={toggleModal}>아이디 찾기 결과</ModalHeader>
+        <ModalHeader toggle={toggleModal} className="modal-header-custom">아이디 찾기 결과</ModalHeader>
         <ModalBody>
           {modalContent}
         </ModalBody>
