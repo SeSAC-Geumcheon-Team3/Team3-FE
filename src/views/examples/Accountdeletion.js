@@ -1,11 +1,17 @@
 import React, { useState } from 'react';
 import { Button, Card, CardHeader, CardBody, FormGroup, Form, Row, Col, Input, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import { useNavigate } from 'react-router-dom';
+import { useRecoilValue, useResetRecoilState } from 'recoil';
+import { accessTokenState } from 'states/accessTokenAtom';
+import deleteMember from 'apis/member/deleteMember';
 
 const AccountDeletion = () => {
   const [isChecked, setIsChecked] = useState(false); // Checkbox 상태 관리
   const [modalOpen, setModalOpen] = useState(false); // 모달 상태 관리
   const navigate = useNavigate();
+
+  const accessToken = useRecoilValue(accessTokenState);
+  const resetAccessToken = useResetRecoilState(accessTokenState);
 
   // Checkbox 상태 업데이트
   const handleCheckboxChange = () => {
@@ -18,9 +24,15 @@ const AccountDeletion = () => {
       setModalOpen(true); // 동의하지 않았을 때 모달 열기
       return;
     }
-    // 실제 탈퇴 처리 로직을 추가하세요
-    alert("회원 탈퇴가 완료되었습니다.");
-    navigate('/'); // 홈 페이지로 리디렉션
+    
+    deleteMember(accessToken).then(res=>{
+
+      alert("회원 탈퇴가 완료되었습니다.");
+      resetAccessToken();
+      navigate('/'); // 홈 페이지로 리디렉션
+
+    }).catch(setModalOpen(true))
+
   };
 
   // 모달 닫기
