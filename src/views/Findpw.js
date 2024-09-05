@@ -2,19 +2,31 @@
 import React, { useState } from 'react';
 import { Button, Card, CardHeader, CardBody, FormGroup, Form, Input, InputGroupAddon, InputGroupText, InputGroup, Row, Col } from 'reactstrap';
 import { useNavigate } from 'react-router-dom';
+import getAuthByMemberInfo from 'apis/member/getAuthByMemberInfo';
+import { useSetRecoilState } from 'recoil';
+import { pwResetAuthState } from 'states/pwResetAuthAtom';
 
 const FindPw = () => {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const navigate = useNavigate();
+  
+  const setPwChangeAuth = useSetRecoilState(pwResetAuthState);
 
   const handleFindPw = () => {
-    // 여기에서 이메일 발송 로직을 추가합니다.
-    // 예: API 호출하여 이메일 발송
+    const data = {
+      "email":email,
+      "name":name,
+      "phone":phone
+    }
 
-    alert(`Password reset link sent to ${email}`);
-    navigate('/auth/login'); // 이메일 발송 후 로그인 페이지로 이동
+    getAuthByMemberInfo(data).then(res=>{
+
+      setPwChangeAuth(res.data.access_token)
+      navigate('/admin/password');
+
+    }).catch(err=>alert(err))
   };
 
   return (

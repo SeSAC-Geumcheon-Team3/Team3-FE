@@ -16,3 +16,15 @@ export const apiInstance = (accessToken) =>{
 
   return instance;
 };
+
+export const basicApiInstance = () =>{
+  
+  const instance = axios.create({
+    baseURL: base_URL,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  return instance;
+};
