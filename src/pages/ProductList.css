@@ -1,0 +1,21 @@
+.table-header-title {
+    font-size: 1.5rem;
+}
+
+/* input 태그가 disabled일 때 */
+.input-disabled {
+    /* background-color: #f0f0f0;
+    color: #a0a0a0;
+    border: 1px solid #ccc; 
+    cursor: not-allowed; */
+    background-color: white !important;
+    border: 0;
+    color:#5e5e5e;
+    padding-left:0 !important;
+  }
+
+.category_select{
+    border:0;
+    padding-left:10px;
+    margin-bottom:10px;
+}
