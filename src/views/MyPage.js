@@ -14,6 +14,9 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
+  InputGroupAddon,
+  InputGroupText,
+  InputGroup
 } from 'reactstrap';
 import UserHeader from 'components/Headers/UserHeader.js';
 import { useNavigate } from 'react-router-dom'; // useNavigate로 변경
@@ -23,6 +26,7 @@ import styles from './MyPage.module.css'
 import putMemberInfo from 'apis/member/putMemberInfo';
 import getAuthByPW from 'apis/member/getAuthByPW';
 import getMemberInfo from 'apis/member/getMemberInfo';
+import Datepicker from 'components/Members/Datepicker';
 
 const MyPage = () => {
   const [modalOpen, setModalOpen] = useState(false);      // 비밀번호 확인 모달
@@ -31,8 +35,6 @@ const MyPage = () => {
 
   const accessToken = useRecoilValue(accessTokenState); // 토큰값
   
-  const [memberInfo, setMemberInfo] = useState();
-
   const [changeMemberInfo, setChangeMemberInfo] = useState(false);  //사용자 정보 수정 상태(활성화:true, 비활성화:false)  
   const [profile, setProfile] = useState("");
   const [email, setEmail] = useState("");
@@ -42,7 +44,7 @@ const MyPage = () => {
   const [birth, setBirth] = useState("");
   const [sex, setSex] = useState("");
   const [household, setHousehold] = useState(0);
-  const [notice, setNotice] = useState();
+  const [notice, setNotice] = useState(false);
 
   const navigate = useNavigate();
 
@@ -52,6 +54,14 @@ const MyPage = () => {
 
   // 입력값 핸들러
   const handleInputChange = (setter) => (e) => setter(e.target.value);
+
+
+  /**
+   * 성별 셀렉트 박스 선택 시 sex 상태 변경
+   * @param {변경 이벤트} e 
+   */
+  const handleSelectChange = (e) => setSex(e.target.value);
+
 
   /**
    * 비밀번호 검증
@@ -79,6 +89,9 @@ const MyPage = () => {
   // 비밀번호 수정 버튼 클릭
   const onClickEditPW = () => setModalOpen(!modalOpen);
 
+  const handleCheckBoxChange = (e) => {
+    setNotice(!notice)
+  }
 
   /**
    * 회원정보 수정 버튼 클릭
@@ -118,10 +131,8 @@ const MyPage = () => {
   useEffect(()=>{
     
     fetchData().then(res=>{
-      console.log(res.data)
 
       // 사용자 정보 state에 입력
-      setMemberInfo(res.data)
       setEmail(res.data.email);
       setName(res.data.name);
       setNickname(res.data.nickname);
@@ -152,56 +163,6 @@ const MyPage = () => {
                 
                 <div className="text-center">
                   <h3>{name}</h3>
-                  <hr className="my-4" />
-                  <div className="my-3">
-                    <h5>성별: {sex} </h5>
-                  </div>
-
-                  {/* 생년월일 선택 박스 */}
-                  <div className="my-3">
-                    <h5>생년월일:</h5>
-                    <div style={{ display: 'flex', justifyContent: 'center' }}>
-                      <select id="year" name="year" style={{ margin: '0 5px' }}>
-                        <option value="">년</option>
-                        {Array.from({ length: 105 }, (_, i) => (
-                          <option key={2024 - i} value={2024 - i}>
-                            {2024 - i}
-                          </option>
-                        ))}
-                      </select>
-                      <select id="month" name="month" style={{ margin: '0 5px' }}>
-                        <option value="">월</option>
-                        {Array.from({ length: 12 }, (_, i) => (
-                          <option key={i + 1} value={i + 1}>
-                            {i + 1}
-                          </option>
-                        ))}
-                      </select>
-                      <select id="day" name="day" style={{ margin: '0 5px' }}>
-                        <option value="">일</option>
-                        {Array.from({ length: 31 }, (_, i) => (
-                          <option key={i + 1} value={i + 1}>
-                            {i + 1}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-
-                  {/* 가구원 수 선택 박스 */}
-                  <div className="my-3">
-                    <h5>가구원 수:</h5>
-                    <div style={{ display: 'flex', justifyContent: 'center' }}>
-                      <select id="household-size" name="household-size">
-                        <option value="">선택하세요</option>
-                        {Array.from({ length: 10 }, (_, i) => (
-                          <option key={i + 1} value={i + 1}>
-                            {i + 1}명
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
 
                   {/* 회원 탈퇴 버튼 */}
                   <div className="my-3">
@@ -299,6 +260,100 @@ const MyPage = () => {
                             disabled={!changeMemberInfo} // 비밀번호 검증 전에는 비활성화
                             onChange={handleInputChange(setPhone)}
                           />
+                        </FormGroup>
+                      </Col>
+                      <Col lg="6">
+                        <FormGroup>
+                          <label className="form-control-label" htmlFor="input-phone">
+                            성별
+                          </label>
+                          { sex=="female" && (  
+                            <Input
+                              className="form-control-alternative"
+                              defaultValue="여성"
+                              id="sex"
+                              type="text"
+                              disabled={true}
+                            />
+                          ) }
+                          { sex=="male" && (  
+                            <Input
+                              className="form-control-alternative"
+                              defaultValue="남성"
+                              id="sex"
+                              type="text"
+                              disabled={true}
+                            />
+                          ) }
+                          { sex=="" && (  
+                              <select className={styles.sex_selectbox} disabled={!changeMemberInfo} value={sex} onChange={handleSelectChange}>
+                                <option value="" selected>선택하세요</option>
+                                <option value="female">여성</option>
+                                <option value="male">남성</option>
+                              </select>
+                          ) }
+                        </FormGroup>
+                      </Col>
+
+
+                      {/* 생년월일 */}
+                      <Col lg="6">
+                        <FormGroup>
+                          <label className="form-control-label" htmlFor="input-phone">
+                            생일
+                          </label>
+                          { birth==="" ? (
+                              <Datepicker  selectedDate={birth} onDateChange={setBirth}/>
+                            )
+                            :(
+                              <Input
+                                className="form-control-alternative"
+                                defaultValue={birth}
+                                id="birth"
+                                type="text"
+                                disabled={true}
+                              />
+                          )}
+                        </FormGroup>
+                      </Col>
+
+                      
+                      {/* 가구원 수 */}
+                      <Col lg="6">
+                        <FormGroup>
+                          <label className="form-control-label" htmlFor="input-phone">
+                            가구원 수 
+                          </label>
+                          <Input
+                            className="form-control-alternative"
+                            defaultValue={household}
+                            id="household"
+                            type="number"
+                            disabled={!changeMemberInfo}
+                          />
+                        </FormGroup>
+                      </Col>
+
+                      
+                      {/* 이메일 알림 설정 동의 */}
+                      <Col lg="6">
+                        <FormGroup>
+                          <label className="form-control-label" htmlFor="input-phone">
+                            이메일 알림 동의
+                          </label>
+                          <div className="custom-control custom-checkbox mb-3" style={{marginTop:'10px'}}>
+                            <input
+                              className="custom-control-input"
+                              id="customCheck1"
+                              type="checkbox"
+                              onChange={handleCheckBoxChange}
+                              disabled={!changeMemberInfo}
+                              checked={notice}
+                            />
+                            <label className="custom-control-label" htmlFor="customCheck1">
+                              수신 동의
+                            </label>
+                          </div>
                         </FormGroup>
                       </Col>
                     </Row>
