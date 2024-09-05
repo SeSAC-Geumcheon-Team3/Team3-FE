@@ -1,26 +1,28 @@
-import {
-  Button,
-  Card,
-  CardHeader,
-  CardBody,
-  FormGroup,
-  Form,
-  Input,
-  InputGroupAddon,
-  InputGroupText,
-  InputGroup,
-  Row,
-  Col,
-} from "reactstrap";
+// src/views/examples/Login.jsx
+import React from 'react';
+import { Button, Card, CardHeader, CardBody, FormGroup, Form, Input, InputGroupAddon, InputGroupText, InputGroup, Row, Col } from 'reactstrap';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
+  const navigate = useNavigate();
+
+  // "Forgot id?" 클릭 핸들러 함수
+  const handleFindId = () => {
+    navigate('/auth/findid');
+  };
+
+  // "Forgot password?" 클릭 핸들러 함수
+  const handleFindPw = () => {
+    navigate('/auth/findpw');
+  };
+
   return (
     <>
       <Col lg="5" md="7">
         <Card className="bg-secondary shadow border-0">
           <CardHeader className="bg-transparent pb-5">
             <div className="text-center mt-2 mb-3">
-              <small>Sign in with credentials</small>
+              <small>로그인하시겠습니까?</small>
             </div>
           </CardHeader>
           <CardBody className="px-lg-5 py-lg-5">
@@ -56,19 +58,19 @@ const Login = () => {
               <div className="custom-control custom-control-alternative custom-checkbox">
                 <input
                   className="custom-control-input"
-                  id="customCheckLogin" // 불필요한 공백 제거
+                  id="customCheckLogin"
                   type="checkbox"
                 />
                 <label
                   className="custom-control-label"
-                  htmlFor="customCheckLogin" // 불필요한 공백 제거
+                  htmlFor="customCheckLogin"
                 >
                   <span className="text-muted">Remember me</span>
                 </label>
               </div>
               <div className="text-center">
                 <Button className="my-4" color="primary" type="button">
-                  Sign in
+                  Login
                 </Button>
               </div>
             </Form>
@@ -79,7 +81,10 @@ const Login = () => {
             <a
               className="text-light"
               href="#pablo"
-              onClick={(e) => e.preventDefault()}
+              onClick={(e) => {
+                e.preventDefault();
+                handleFindPw(); // 클릭 시 handleFindPw 함수 호출
+              }}
             >
               <small>Forgot password?</small>
             </a>
@@ -88,9 +93,12 @@ const Login = () => {
             <a
               className="text-light"
               href="#pablo"
-              onClick={(e) => e.preventDefault()}
+              onClick={(e) => {
+                e.preventDefault();
+                handleFindId(); // 클릭 시 handleFindId 함수 호출
+              }}
             >
-              <small>Create new account</small>
+              <small>Forgot id?</small>
             </a>
           </Col>
         </Row>
