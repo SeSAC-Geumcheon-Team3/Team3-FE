@@ -4,6 +4,7 @@ import styles from './Admindetail.styles.css';
 import { useRecoilValue } from 'recoil';
 import { accessTokenState } from 'states/accessTokenAtom';
 import getMemberList from 'apis/admin/getMemberList';
+import deleteMember from 'apis/admin/deleteMember';
 
 const AdminDetail = () => {
   const [selectedMember, setSelectedMember] = useState(null);
@@ -33,13 +34,25 @@ const AdminDetail = () => {
     fetchMembers(currentPage);
   }, [currentPage]);
 
+  const handleDeleteMember = (member) => {
+    if (window.confirm(`${member.name}님을 강제 탈퇴하시겠습니까?`)) {
+      deleteMember(member.member_idx, accessToken,
+        (response) => {
+          alert(response.message);
+          fetchMembers(currentPage);
+          setSelectedMember(null);
+        },
+        (error) => {
+          console.error(error);
+          alert('회원 삭제에 실패했습니다.');
+        }
+      );
+    }
+  };
+
   const indexOfLastMember = currentPage * membersPerPage;
   const indexOfFirstMember = indexOfLastMember - membersPerPage;
   const currentMembers = members.slice(indexOfFirstMember, indexOfLastMember);
-
-  const handleDeleteMember = (member) => {
-    alert(`${member.name}님을 강제 탈퇴합니다.`);
-  };
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
