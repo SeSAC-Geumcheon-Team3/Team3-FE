@@ -17,3 +17,8 @@
     display:flex;
     justify-content: center;
 }
+
+.sex_selectbox{
+    width: 100%;
+    height:100%;
+}
