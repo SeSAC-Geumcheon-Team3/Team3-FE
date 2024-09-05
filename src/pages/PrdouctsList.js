@@ -9,7 +9,6 @@ const categories = ["식료품 및 음료", "주방 및 조리 용품", "위생 
 
 
 const ProductList = (props) => {
-  const [hideCards, setHideCards] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [items, setItems] = useState([
     { id: 1, name: "휴지", quantity: 20, alerts: 2, lastPurchase: "2024-09-01", category: "위생" },
@@ -35,7 +34,7 @@ const ProductList = (props) => {
 
   return (
     <>
-      <Header hideCards={hideCards} />
+      <Header/>
       <Container className="mt--7" fluid>
         <Row>
           <Col md="12">
