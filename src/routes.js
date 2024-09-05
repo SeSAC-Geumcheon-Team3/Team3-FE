@@ -2,7 +2,7 @@
 import React from 'react';
 import Index from 'views/Index.js';
 import MyPage from 'views/MyPage';
-import Register from 'views/examples/Post';
+import Register from 'views/Post';
 import Login from 'views/Login.js';
 import Signup from 'views/Signup';
 import Icons from 'views/examples/Icons.js';
@@ -11,6 +11,7 @@ import FindPw from 'views/Findpw';
 import AccountDeletion from 'views/examples/Accountdeletion'; // 경로 수정
 import PasswordChange from 'views/PasswordChange';
 import ProductList from "pages/PrdouctsList";
+import AddProduct from 'views/Addproduct';
 
 var routes = [
   {
@@ -62,10 +63,10 @@ var routes = [
     layout: '/auth',
   },
   {
-    path: '/register',
-    name: 'Register',
-    icon: 'ni ni-circle-08 text-pink',
-    component: <Register />,
+    path: '/post',
+    name: 'Post',
+    icon: 'ni ni-chat-round',
+    component: <post />,
     layout: '/auth',
   },
   {
@@ -87,6 +88,13 @@ var routes = [
     name: 'Account Deletion',
     icon: 'ni ni-fat-remove text-red',
     component: <AccountDeletion />,
+    layout: '/admin',
+  },
+  {
+    path: '/add-product',
+    name: 'Add Product',
+    icon: 'ni ni-circle-08 text-pink',
+    component: <AddProduct />,
     layout: '/admin',
   },
 ];

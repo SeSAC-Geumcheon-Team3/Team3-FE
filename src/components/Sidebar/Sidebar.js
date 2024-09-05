@@ -1,27 +1,6 @@
-/*!
-
-=========================================================
-* Argon Dashboard React - v1.2.4
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/argon-dashboard-react
-* Copyright 2024 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/argon-dashboard-react/blob/master/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
-/*eslint-disable*/
 import { useState } from "react";
 import { NavLink as NavLinkRRD, Link } from "react-router-dom";
-// nodejs library to set properties for components
 import { PropTypes } from "prop-types";
-
-// reactstrap components
 import {
   Button,
   Card,
@@ -52,90 +31,83 @@ import {
   Col,
 } from "reactstrap";
 
-var ps;
-
 const Sidebar = (props) => {
-  const [collapseOpen, setCollapseOpen] = useState();
-  // verifies if routeName is the one active (in browser input)
+  const [collapseOpen, setCollapseOpen] = useState(false);
+
+  /**
+   * routeName이 현재 경로와 일치하는지 확인하여 활성 상태를 반환합니다.
+   * @param {string} routeName - 경로 이름
+   * @returns {string} - 활성 상태 클래스
+   */
   const activeRoute = (routeName) => {
-    return props.location.pathname.indexOf(routeName) > -1 ? "active" : "";
+    return props.location.pathname.includes(routeName) ? "active" : "";
   };
-  // toggles collapse between opened and closed (true/false)
+
+  /**
+   * Collapse 상태를 토글합니다.
+   */
   const toggleCollapse = () => {
-    setCollapseOpen((data) => !data);
+    setCollapseOpen(prevState => !prevState);
   };
-  // closes the collapse
+
+  /**
+   * Collapse를 닫습니다.
+   */
   const closeCollapse = () => {
     setCollapseOpen(false);
   };
-  // creates the links that appear in the left menu / Sidebar
+
+  /**
+   * 사이드바에 표시될 링크를 생성합니다.
+   * @param {Array} routes - 경로 배열
+   * @returns {Array} - NavItem 배열
+   */
   const createLinks = (routes) => {
-    return routes.map((prop, key) => {
-      return (
-        <NavItem key={key}>
-          <NavLink
-            to={prop.layout + prop.path}
-            tag={NavLinkRRD}
-            onClick={closeCollapse}
-          >
-            <i className={prop.icon} />
-            {prop.name}
-          </NavLink>
-        </NavItem>
-      );
-    });
+    return routes.map((prop, key) => (
+      <NavItem key={key}>
+        <NavLink
+          to={prop.layout + prop.path}
+          tag={NavLinkRRD}
+          onClick={closeCollapse}
+        >
+          <i className={prop.icon} />
+          {prop.name}
+        </NavLink>
+      </NavItem>
+    ));
   };
 
   const { bgColor, routes, logo } = props;
   let navbarBrandProps;
-  if (logo && logo.innerLink) {
-    navbarBrandProps = {
-      to: logo.innerLink,
-      tag: Link,
-    };
-  } else if (logo && logo.outterLink) {
-    navbarBrandProps = {
-      href: logo.outterLink,
-      target: "_blank",
-    };
+
+  if (logo) {
+    navbarBrandProps = logo.innerLink
+      ? { to: logo.innerLink, tag: Link }
+      : { href: logo.outterLink, target: "_blank" };
   }
 
   return (
-    <Navbar
-      className="navbar-vertical fixed-left navbar-light bg-white"
-      expand="md"
-      id="sidenav-main"
-    >
+    <Navbar className="navbar-vertical fixed-left navbar-light bg-white" expand="md" id="sidenav-main">
       <Container fluid>
         {/* Toggler */}
-        <button
-          className="navbar-toggler"
-          type="button"
-          onClick={toggleCollapse}
-        >
+        <button className="navbar-toggler" type="button" onClick={toggleCollapse}>
           <span className="navbar-toggler-icon" />
         </button>
+
         {/* Brand */}
-        {logo ? (
+        {logo && (
           <NavbarBrand className="pt-0" {...navbarBrandProps}>
-            <img
-              alt={logo.imgAlt}
-              className="navbar-brand-img"
-              src={logo.imgSrc}
-            />
+            <img alt={logo.imgAlt} className="navbar-brand-img" src={logo.imgSrc} />
           </NavbarBrand>
-        ) : null}
+        )}
+
         {/* User */}
         <Nav className="align-items-center d-md-none">
           <UncontrolledDropdown nav>
             <DropdownToggle nav className="nav-link-icon">
               <i className="ni ni-bell-55" />
             </DropdownToggle>
-            <DropdownMenu
-              aria-labelledby="navbar-default_dropdown_1"
-              className="dropdown-menu-arrow"
-              right
-            >
+            <DropdownMenu aria-labelledby="navbar-default_dropdown_1" className="dropdown-menu-arrow" right>
               <DropdownItem>Action</DropdownItem>
               <DropdownItem>Another action</DropdownItem>
               <DropdownItem divider />
@@ -146,10 +118,7 @@ const Sidebar = (props) => {
             <DropdownToggle nav>
               <Media className="align-items-center">
                 <span className="avatar avatar-sm rounded-circle">
-                  <img
-                    alt="..."
-                    src={require("../../assets/img/theme/team-1-800x800.jpg")}
-                  />
+                  <img alt="..." src={require("../../assets/img/theme/team-1-800x800.jpg")} />
                 </span>
               </Media>
             </DropdownToggle>
@@ -181,12 +150,13 @@ const Sidebar = (props) => {
             </DropdownMenu>
           </UncontrolledDropdown>
         </Nav>
+
         {/* Collapse */}
         <Collapse navbar isOpen={collapseOpen}>
           {/* Collapse header */}
           <div className="navbar-collapse-header d-md-none">
             <Row>
-              {logo ? (
+              {logo && (
                 <Col className="collapse-brand" xs="6">
                   {logo.innerLink ? (
                     <Link to={logo.innerLink}>
@@ -198,19 +168,16 @@ const Sidebar = (props) => {
                     </a>
                   )}
                 </Col>
-              ) : null}
+              )}
               <Col className="collapse-close" xs="6">
-                <button
-                  className="navbar-toggler"
-                  type="button"
-                  onClick={toggleCollapse}
-                >
+                <button className="navbar-toggler" type="button" onClick={toggleCollapse}>
                   <span />
                   <span />
                 </button>
               </Col>
             </Row>
           </div>
+
           {/* Form */}
           <Form className="mt-4 mb-3 d-md-none">
             <InputGroup className="input-group-rounded input-group-merge">
@@ -227,33 +194,13 @@ const Sidebar = (props) => {
               </InputGroupAddon>
             </InputGroup>
           </Form>
-          {/* Navigation */}
+
           <Nav navbar>{createLinks(routes)}</Nav>
-          {/* Divider */}
-          <hr className="my-3" />
-          {/* Heading */}
-          <h6 className="navbar-heading text-muted">Documentation</h6>
-          {/* Navigation */}
+
           <Nav className="mb-md-3" navbar>
-            <NavItem>
-              <NavLink href="https://demos.creative-tim.com/argon-dashboard-react/#/documentation/overview?ref=adr-admin-sidebar">
-                <i className="ni ni-spaceship" />
-                Getting started
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink href="https://demos.creative-tim.com/argon-dashboard-react/#/documentation/colors?ref=adr-admin-sidebar">
-                <i className="ni ni-palette" />
-                Foundation
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink href="https://demos.creative-tim.com/argon-dashboard-react/#/documentation/alerts?ref=adr-admin-sidebar">
-                <i className="ni ni-ui-04" />
-                Components
-              </NavLink>
-            </NavItem>
+            <NavItem />
           </Nav>
+
           <Nav className="mb-md-3" navbar>
             <NavItem className="active-pro active">
               <NavLink href="https://www.creative-tim.com/product/argon-dashboard-pro-react?ref=adr-admin-sidebar">
@@ -273,18 +220,11 @@ Sidebar.defaultProps = {
 };
 
 Sidebar.propTypes = {
-  // links that will be displayed inside the component
   routes: PropTypes.arrayOf(PropTypes.object),
   logo: PropTypes.shape({
-    // innerLink is for links that will direct the user within the app
-    // it will be rendered as <Link to="...">...</Link> tag
     innerLink: PropTypes.string,
-    // outterLink is for links that will direct the user outside the app
-    // it will be rendered as simple <a href="...">...</a> tag
     outterLink: PropTypes.string,
-    // the image src of the logo
     imgSrc: PropTypes.string.isRequired,
-    // the alt for the img
     imgAlt: PropTypes.string.isRequired,
   }),
 };

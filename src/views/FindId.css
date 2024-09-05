@@ -1,0 +1,19 @@
+/* FindId.css */
+
+/* 아이디 찾기 제목 스타일 */
+.find-id-title {
+    font-size: 24px; /* 제목 크기 조정 */
+    font-weight: bold; /* 제목 굵게 */
+  }
+  
+  /* 모달 헤더 스타일 */
+  .modal-header-custom {
+    font-size: 20px; /* 모달 헤더 크기 조정 */
+    font-weight: bold; /* 헤더 굵게 */
+  }
+  
+  /* 모달 바디 스타일 (이메일 내용) */
+  .modal-body {
+    font-size: 16px; /* 모달 바디 기본 크기 유지 */
+  }
+  
