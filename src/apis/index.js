@@ -52,9 +52,8 @@ export const fileReqApiInstance = (accessToken) => {
     headers: {
       "Content-Type": "application/json",
     },
+    responseType: 'blob', // 응답 형식을 blob으로 설정
   });
-
-  responseType: 'blob', // 응답 형식을 blob으로 설정
 
   interceptors(instance, accessToken)
 
