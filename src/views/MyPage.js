@@ -17,21 +17,20 @@ import {
 } from 'reactstrap';
 import UserHeader from 'components/Headers/UserHeader.js';
 import { useNavigate } from 'react-router-dom'; // useNavigate로 변경
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { accessTokenState } from 'states/accessTokenAtom';
 import styles from './MyPage.module.css'
 import putMemberInfo from 'apis/member/putMemberInfo';
 import getAuthByPW from 'apis/member/getAuthByPW';
 import getMemberInfo from 'apis/member/getMemberInfo';
+import { pwResetAuthState } from 'states/pwResetAuthAtom';
 
 const MyPage = () => {
   const [modalOpen, setModalOpen] = useState(false);      // 비밀번호 확인 모달
   const [inputPassword, setInputPassword] = useState(""); // 사용자 인증 비밀번호
-  const [isPasswordVerified, setIsPasswordVerified] = useState(false);  //비밀번호 확인 여부 검증
 
   const accessToken = useRecoilValue(accessTokenState); // 토큰값
-  
-  const [memberInfo, setMemberInfo] = useState();
+  const [pwResetAuth, setPwResetAuth] = useRecoilState(pwResetAuthState); //비밀번호 재설정 권한용 토큰
 
   const [changeMemberInfo, setChangeMemberInfo] = useState(false);  //사용자 정보 수정 상태(활성화:true, 비활성화:false)  
   const [profile, setProfile] = useState("");
@@ -60,12 +59,11 @@ const MyPage = () => {
     getAuthByPW(accessToken, inputPassword)
       .then(res=>{
         // 비밀번호 검증 후 비밀번호 변경 모드 활성화
-        setIsPasswordVerified(true)
-        window.location.href="/admin/PasswordChange"
+        setPwResetAuth(res.data.access_token)
+        navigate("/admin/password")
     })
       .catch(err=>{
         // 인증 실패
-        setIsPasswordVerified(false)
         setInputPassword("");
         alert("비밀번호가 일치하지 않습니다.");
     })
@@ -100,7 +98,7 @@ const MyPage = () => {
       alert(res.data.message);
 
       // 2. 원래 페이지로 새로고침 
-      window.location.href='/admin/mypage'; // 절대 경로를 사용하여 이동
+      navigate('/admin/mypage'); // 절대 경로를 사용하여 이동
 
     }).catch(err=>alert(err))
   }
@@ -118,10 +116,8 @@ const MyPage = () => {
   useEffect(()=>{
     
     fetchData().then(res=>{
-      console.log(res.data)
 
       // 사용자 정보 state에 입력
-      setMemberInfo(res.data)
       setEmail(res.data.email);
       setName(res.data.name);
       setNickname(res.data.nickname);
