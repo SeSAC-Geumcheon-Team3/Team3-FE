@@ -1,54 +1,90 @@
-import { useState } from "react";
-import { Button, Card, CardHeader, CardBody, Table, Container, Row, Col, Input } from "reactstrap";
-import { FaExclamationCircle, FaCheckCircle } from "react-icons/fa";
+import React, { useState } from "react";
+import { Button, Card, CardHeader, CardBody, Table, Container, Row, Col, Input, Pagination, PaginationItem, PaginationLink } from "reactstrap";
+import { FaExclamationCircle, FaCheckCircle, FaEdit, FaPlus, FaSearch } from "react-icons/fa";
 import Header from "components/Headers/Header.js";
+import "./ProductList.css";
 
-// 'Index'라는 이름의 React 컴포넌트를 정의합니다.
-const Index = (props) => {
-  // 편집 모드와 생필품 목록의 상태를 관리합니다.
+const categories = ["식료품 및 음료", "주방 및 조리 용품", "위생 및 청결 용품", "의류 및 세탁 용품", "가구 및 가정용품",
+    "건강 및 응급 용품", "개인 관리 용품", "유아 및 육아용품", "반려동물 용품", "일회용품 및 소비재", "전기/전자 기기 및 액세서리"];
+
+
+const ProductList = (props) => {
+  const [hideCards, setHideCards] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [items, setItems] = useState([
-    { id: 1, name: "화장지", quantity: 20, alerts: 2, lastPurchase: "2024-09-01", category: "위생" },
-    { id: 2, name: "손 세정제", quantity: 15, alerts: 1, lastPurchase: "2024-08-25", category: "위생" },
+    { id: 1, name: "휴지", quantity: 20, alerts: 2, lastPurchase: "2024-09-01", category: "위생" },
+    { id: 2, name: "핸드 솝", quantity: 15, alerts: 1, lastPurchase: "2024-08-25", category: "위생" },
     { id: 3, name: "샴푸", quantity: 10, alerts: 0, lastPurchase: "2024-07-10", category: "헤어케어" },
   ]);
+  const [searchText, setSearchText] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("모든 카테고리");
 
-  // 편집 모드를 토글하는 함수입니다.
   const toggleEditing = () => {
     setIsEditing(!isEditing);
   };
 
-  // 컴포넌트의 반환 부분입니다.
+  const handleSearch = () => {
+    // 검색 기능 구현
+    console.log("Search for:", searchText, "in category:", selectedCategory);
+  };
+
+  const filteredItems = items.filter(item =>
+    (selectedCategory === "모든 카테고리" || item.category === selectedCategory) &&
+    item.name.toLowerCase().includes(searchText.toLowerCase())
+  );
+
   return (
     <>
-      <Header />
-      {/* 페이지 콘텐츠를 감싸는 컨테이너입니다. */}
+      <Header hideCards={hideCards} />
       <Container className="mt--7" fluid>
         <Row>
           <Col md="12">
-            {/* 검색 및 마이페이지 버튼 */}
             <Row className="mb-4">
-              <Col md="8">
-                <Input type="text" placeholder="아이템을 검색하세요..." />
+              <Col md="4">
+                <Button color="secondary" block size="sm" className="dropdown-toggle">
+                  {selectedCategory}
+                </Button>
+                <div className="dropdown-menu">
+                  {categories.map(category => (
+                    <Button
+                      key={category}
+                      className="dropdown-item"
+                      onClick={() => setSelectedCategory(category)}
+                    >
+                      {category}
+                    </Button>
+                  ))}
+                </div>
               </Col>
-              <Col md="4" className="text-right">
-                <Button color="primary" href="#mypage">
-                  마이 페이지
+              <Col md="6">
+                <Input
+                  type="text"
+                  placeholder="아이템 검색..."
+                  value={searchText}
+                  onChange={(e) => setSearchText(e.target.value)}
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter') {
+                      handleSearch();
+                    }
+                  }}
+                />
+              </Col>
+              <Col md="2" className="text-right">
+                <Button
+                  color="primary"
+                  size="sm"
+                  onClick={handleSearch}
+                >
+                  <FaSearch size={16} />
                 </Button>
               </Col>
             </Row>
 
-            {/* 생필품 목록 표 */}
             <Card className="shadow">
               <CardHeader className="border-0">
                 <Row className="align-items-center">
                   <div className="col">
-                    <h3 className="mb-0">필수 물품 목록</h3>
-                  </div>
-                  <div className="col text-right">
-                    <Button color="primary" size="sm" onClick={toggleEditing}>
-                      {isEditing ? "저장" : "편집"}
-                    </Button>
+                    {/* '필수 물품 목록' 텍스트 삭제 */}
                   </div>
                 </Row>
               </CardHeader>
@@ -58,15 +94,15 @@ const Index = (props) => {
                     <tr>
                       <th scope="col">번호</th>
                       <th scope="col">상품명</th>
-                      <th scope="col">재고 개수</th>
-                      <th scope="col">알림 개수</th>
+                      <th scope="col">보유 수량</th>
+                      <th scope="col">알림 수량</th>
                       <th scope="col">마지막 구매일</th>
                       <th scope="col">카테고리</th>
-                      <th scope="col">상태</th> {/* 추가된 열 */}
+                      <th scope="col">알림</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {items.map((item) => (
+                    {filteredItems.map((item) => (
                       <tr key={item.id}>
                         <td>{item.id}</td>
                         <td>
@@ -107,15 +143,68 @@ const Index = (props) => {
                             item.quantity
                           )}
                         </td>
-                        <td>{item.alerts}</td>
-                        <td>{item.lastPurchase}</td>
-                        <td>{item.category}</td>
                         <td>
-                          {/* 아이콘을 이용하여 재고 상태 표시 */}
-                          {item.quantity < 5 ? (
-                            <FaExclamationCircle color="red" />
+                          {isEditing ? (
+                            <Input
+                              type="number"
+                              defaultValue={item.alerts}
+                              onChange={(e) =>
+                                setItems(
+                                  items.map((i) =>
+                                    i.id === item.id
+                                      ? { ...i, alerts: e.target.value }
+                                      : i
+                                  )
+                                )
+                              }
+                            />
                           ) : (
-                            <FaCheckCircle color="green" />
+                            item.alerts
+                          )}
+                        </td>
+                        <td>
+                          {isEditing ? (
+                            <Input
+                              type="date"
+                              defaultValue={item.lastPurchase}
+                              onChange={(e) =>
+                                setItems(
+                                  items.map((i) =>
+                                    i.id === item.id
+                                      ? { ...i, lastPurchase: e.target.value }
+                                      : i
+                                  )
+                                )
+                              }
+                            />
+                          ) : (
+                            item.lastPurchase
+                          )}
+                        </td>
+                        <td>
+                          {isEditing ? (
+                            <Input
+                              type="text"
+                              defaultValue={item.category}
+                              onChange={(e) =>
+                                setItems(
+                                  items.map((i) =>
+                                    i.id === item.id
+                                      ? { ...i, category: e.target.value }
+                                      : i
+                                  )
+                                )
+                              }
+                            />
+                          ) : (
+                            item.category
+                          )}
+                        </td>
+                        <td>
+                          {item.alerts > 0 ? (
+                            <FaExclamationCircle style={{ color: 'red' }} />
+                          ) : (
+                            <FaCheckCircle style={{ color: 'green' }} />
                           )}
                         </td>
                       </tr>
@@ -126,9 +215,30 @@ const Index = (props) => {
             </Card>
           </Col>
         </Row>
+        <Row className="mt-4">
+          <Col md="12" className="text-center">
+            <Pagination>
+              <PaginationItem disabled>
+                <PaginationLink previous href="#pablo" />
+              </PaginationItem>
+              <PaginationItem active>
+                <PaginationLink href="#pablo">1</PaginationLink>
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationLink href="#pablo">2</PaginationLink>
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationLink href="#pablo">3</PaginationLink>
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationLink next href="#pablo" />
+              </PaginationItem>
+            </Pagination>
+          </Col>
+        </Row>
       </Container>
     </>
   );
 };
 
-export default Index;
+export default ProductList;

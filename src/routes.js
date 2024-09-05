@@ -22,8 +22,16 @@ import Register from "views/examples/Register.js";
 import Login from "views/examples/Login.js";
 import Tables from "views/examples/Tables.js";
 import Icons from "views/examples/Icons.js";
+import ProductList from "pages/PrdouctsList";
 
 var routes = [
+  {
+    path: "/products",
+    name: "생필품 목록 조회",
+    icon: "ni ni-tv-2 text-primary",
+    component: <ProductList />,
+    layout: "/admin",
+  },
   {
     path: "/index",
     name: "Dashboard",
