@@ -5,6 +5,8 @@ import { useNavigate } from 'react-router-dom';
 
 const FindPw = () => {
   const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
   const navigate = useNavigate();
 
   const handleFindPw = () => {
@@ -18,34 +20,65 @@ const FindPw = () => {
   return (
     <Col lg="5" md="7">
       <Card className="bg-secondary shadow border-0">
-        <CardHeader className="bg-transparent pb-5">
+        <CardHeader className="bg-transparent pb-3">
           <div className="text-center mt-2 mb-3">
-            <small>비밀번호 찾기</small>
+            <big>비밀번호 찾기</big>
           </div>
         </CardHeader>
         <CardBody className="px-lg-5 py-lg-5">
           <Form role="form">
-            <FormGroup className="mb-3">
-              <InputGroup className="input-group-alternative">
+            <FormGroup className="mb-0">
+              <InputGroup className="input-group-alternative mb-3">
                 <InputGroupAddon addonType="prepend">
                   <InputGroupText>
                     <i className="ni ni-email-83" />
                   </InputGroupText>
                 </InputGroupAddon>
                 <Input
-                  placeholder="Email"
+                  placeholder="이메일"
                   type="email"
                   autoComplete="new-email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </InputGroup>
+              
+              <InputGroup className="input-group-alternative mb-3">
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText>
+                    <i className="ni ni-circle-08" />
+                  </InputGroupText>
+                </InputGroupAddon>
+                <Input
+                  placeholder="이름"
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </InputGroup>
+
+              
+              <InputGroup className="input-group-alternative">
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText>
+                    <i className="ni ni-mobile-button" />
+                  </InputGroupText>
+                </InputGroupAddon>
+                <Input
+                  placeholder="전화번호"
+                  type="text"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                />
+              </InputGroup>
             </FormGroup>
+
             <div className="text-center">
               <Button className="my-4" color="primary" type="button" onClick={handleFindPw}>
-                Find Password
+                비밀번호 찾기
               </Button>
             </div>
+
           </Form>
         </CardBody>
       </Card>
