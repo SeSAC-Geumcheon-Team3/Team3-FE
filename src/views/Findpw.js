@@ -1,6 +1,5 @@
-// src/views/examples/FindPw.jsx
 import React, { useState } from 'react';
-import { Button, Card, CardHeader, CardBody, FormGroup, Form, Input, InputGroupAddon, InputGroupText, InputGroup, Row, Col } from 'reactstrap';
+import { Button, Card, CardHeader, CardBody, FormGroup, Form, Input, InputGroupAddon, InputGroupText, InputGroup, Col, Row } from 'reactstrap';
 import { useNavigate } from 'react-router-dom';
 import getAuthByMemberInfo from 'apis/member/getAuthByMemberInfo';
 import { useSetRecoilState } from 'recoil';
@@ -15,6 +14,7 @@ const FindPw = () => {
   const setPwChangeAuth = useSetRecoilState(pwResetAuthState);
 
   const handleFindPw = () => {
+    
     const data = {
       "email":email,
       "name":name,
@@ -41,6 +41,38 @@ const FindPw = () => {
           <Form role="form">
             <FormGroup className="mb-0">
               <InputGroup className="input-group-alternative mb-3">
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText>
+                    <i className="ni ni-user" />
+                  </InputGroupText>
+                </InputGroupAddon>
+                <Input
+                  placeholder="Name"
+                  type="text"
+                  autoComplete="new-name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </InputGroup>
+            </FormGroup>
+            <FormGroup className="mb-3">
+              <InputGroup className="input-group-alternative">
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText>
+                    <i className="ni ni-mobile-button" />
+                  </InputGroupText>
+                </InputGroupAddon>
+                <Input
+                  placeholder="Phone Number"
+                  type="text"
+                  autoComplete="new-phone"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                />
+              </InputGroup>
+            </FormGroup>
+            <FormGroup className="mb-3">
+              <InputGroup className="input-group-alternative">
                 <InputGroupAddon addonType="prepend">
                   <InputGroupText>
                     <i className="ni ni-email-83" />
@@ -94,6 +126,18 @@ const FindPw = () => {
           </Form>
         </CardBody>
       </Card>
+      <Row className="mt-4">
+        <Col className="text-center">
+          <Button className="my-2" color="link" onClick={handleForgotId}>
+            Forgot ID?
+          </Button>
+        </Col>
+        <Col className="text-center">
+          <Button className="my-2" color="link" onClick={handleSignUp}>
+            Sign Up
+          </Button>
+        </Col>
+      </Row>
     </Col>
   );
 };

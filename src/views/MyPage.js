@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Button,
   Card,
@@ -14,6 +14,9 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
+  InputGroupAddon,
+  InputGroupText,
+  InputGroup
 } from 'reactstrap';
 import UserHeader from 'components/Headers/UserHeader.js';
 import { useNavigate } from 'react-router-dom'; // useNavigate로 변경
@@ -24,13 +27,17 @@ import putMemberInfo from 'apis/member/putMemberInfo';
 import getAuthByPW from 'apis/member/getAuthByPW';
 import getMemberInfo from 'apis/member/getMemberInfo';
 import { pwResetAuthState } from 'states/pwResetAuthAtom';
+import Datepicker from 'components/Members/Datepicker';
+import postProfile from 'apis/member/postProfile';
+import getProfile from 'apis/member/getProfile';
 
 const MyPage = () => {
   const [modalOpen, setModalOpen] = useState(false);      // 비밀번호 확인 모달
   const [inputPassword, setInputPassword] = useState(""); // 사용자 인증 비밀번호
 
   const accessToken = useRecoilValue(accessTokenState); // 토큰값
-  const [pwResetAuth, setPwResetAuth] = useRecoilState(pwResetAuthState); //비밀번호 재설정 권한용 토큰
+  
+  const [pwResetAuth, setPwResetAuth] = useRecoilState(pwResetAuthState); //비밀번호 재설정 권한용 토큰=
 
   const [changeMemberInfo, setChangeMemberInfo] = useState(false);  //사용자 정보 수정 상태(활성화:true, 비활성화:false)  
   const [profile, setProfile] = useState("");
@@ -41,7 +48,11 @@ const MyPage = () => {
   const [birth, setBirth] = useState("");
   const [sex, setSex] = useState("");
   const [household, setHousehold] = useState(0);
-  const [notice, setNotice] = useState();
+  const [notice, setNotice] = useState(false);
+
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [profileEdit, setProfileEdit] = useState(false);
+  const fileInputRef = useRef(null);
 
   const navigate = useNavigate();
 
@@ -51,6 +62,14 @@ const MyPage = () => {
 
   // 입력값 핸들러
   const handleInputChange = (setter) => (e) => setter(e.target.value);
+
+
+  /**
+   * 성별 셀렉트 박스 선택 시 sex 상태 변경
+   * @param {변경 이벤트} e 
+   */
+  const handleSelectChange = (e) => setSex(e.target.value);
+
 
   /**
    * 비밀번호 검증
@@ -77,6 +96,45 @@ const MyPage = () => {
   // 비밀번호 수정 버튼 클릭
   const onClickEditPW = () => setModalOpen(!modalOpen);
 
+  const handleCheckBoxChange = (e) => {
+    setNotice(!notice)
+  }
+
+  //프로필 이미지 수정 버튼클릭
+  const onClickProfileEditBtn = () =>{
+    setProfileEdit(true);
+    fileInputRef.current.click()
+  }
+  // 파일 선택 핸들러
+  const handleFileChange = (event) => {
+    setProfile(URL.createObjectURL(event.target.files[0]))
+    setSelectedFile(event.target.files[0]);
+  };
+  // 파일 전송 버튼 클릭
+  const handlePostFileBtn = () => {
+    const data = new FormData();
+    data.append('profile_image',selectedFile);
+    postProfile(accessToken, data).then(res=>{
+      alert(res.data.message);
+      window.location.href='/admin/mypage';
+    }).catch(err=>console.log(err))
+  }
+  // 파일 다운로드 클릭 
+  const onClickDownloadProfile = () => {
+    if (!profile) {
+      alert("다운로드할 파일이 없습니다.");
+      return;
+    }
+  
+    // a 태그 생성
+    const link = document.createElement('a');
+    link.href = profile; // profile 변수에 있는 이미지 URL 사용
+    link.download = 'profile_image.jpg'; // 다운로드될 파일명 설정
+    document.body.appendChild(link);
+    link.click(); // a 태그 클릭하여 다운로드 실행
+    document.body.removeChild(link); // a 태그 제거하여 클린업
+
+  }
 
   /**
    * 회원정보 수정 버튼 클릭
@@ -87,7 +145,6 @@ const MyPage = () => {
       "email":email,
       "nickname":nickname,
       "phone":phone,
-      "profile_img":profile,
       "birth":birth,
       "sex":sex,
       "household":household,
@@ -111,12 +168,16 @@ const MyPage = () => {
     return await getMemberInfo(accessToken)
   }
 
+  const fetchProfile = async () =>{
+    return await getProfile(accessToken)
+  }
+
 
   // memberInfo에 변화가 생길 때 마다 페이지 새로고침
   useEffect(()=>{
     
     fetchData().then(res=>{
-
+      
       // 사용자 정보 state에 입력
       setEmail(res.data.email);
       setName(res.data.name);
@@ -126,8 +187,11 @@ const MyPage = () => {
       setSex(res.data.sex);
       setHousehold(res.data.household);
       setNotice(res.data.notice);
-
     }).catch(err=> console.log(err))
+
+    fetchProfile().then(res=>{
+      setProfile(URL.createObjectURL(res.data))
+    })
 
   },[])
 
@@ -141,64 +205,35 @@ const MyPage = () => {
             <Card className="card-profile shadow">
               {/* 기존 프로필 정보 */}
               <CardBody className="pt-0 pt-md-4">
-                
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleFileChange}
+                  style={{ display: 'none' }}
+                />
+                {profileEdit ? (
+                  <>
+                    <Button color="primary" size="sm" type="button" onClick={handlePostFileBtn}>
+                      수정 확인
+                    </Button>
+                  </>
+                ):(
+                  <>
+                    <Button color="primary" size="sm" type="button" onClick={onClickProfileEditBtn}>
+                      사진 수정하기
+                    </Button>
+                    <Button color="primary" size="sm" type="button" onClick={onClickDownloadProfile}>
+                      사진 다운로드받기
+                    </Button>
+                  </>
+                )}
                 <div className={styles.profileHolder}>
-                  <img src={profile||'https://stickershop.line-scdn.net/stickershop/v1/product/1345501/LINEStorePC/main.png?v=1'} style={{ width: '200px', height: '200px', objectFit: 'cover' }} alt="profile"  />
+                  <img src={profile} style={{ width: '200px', height: '200px', objectFit: 'cover' }}/>
                 </div>
-                
+
                 <div className="text-center">
                   <h3>{name}</h3>
-                  <hr className="my-4" />
-                  <div className="my-3">
-                    <h5>성별: {sex} </h5>
-                  </div>
-
-                  {/* 생년월일 선택 박스 */}
-                  <div className="my-3">
-                    <h5>생년월일:</h5>
-                    <div style={{ display: 'flex', justifyContent: 'center' }}>
-                      <select id="year" name="year" style={{ margin: '0 5px' }}>
-                        <option value="">년</option>
-                        {Array.from({ length: 105 }, (_, i) => (
-                          <option key={2024 - i} value={2024 - i}>
-                            {2024 - i}
-                          </option>
-                        ))}
-                      </select>
-                      <select id="month" name="month" style={{ margin: '0 5px' }}>
-                        <option value="">월</option>
-                        {Array.from({ length: 12 }, (_, i) => (
-                          <option key={i + 1} value={i + 1}>
-                            {i + 1}
-                          </option>
-                        ))}
-                      </select>
-                      <select id="day" name="day" style={{ margin: '0 5px' }}>
-                        <option value="">일</option>
-                        {Array.from({ length: 31 }, (_, i) => (
-                          <option key={i + 1} value={i + 1}>
-                            {i + 1}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-
-                  {/* 가구원 수 선택 박스 */}
-                  <div className="my-3">
-                    <h5>가구원 수:</h5>
-                    <div style={{ display: 'flex', justifyContent: 'center' }}>
-                      <select id="household-size" name="household-size">
-                        <option value="">선택하세요</option>
-                        {Array.from({ length: 10 }, (_, i) => (
-                          <option key={i + 1} value={i + 1}>
-                            {i + 1}명
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-
+                  <hr></hr>
                   {/* 회원 탈퇴 버튼 */}
                   <div className="my-3">
                     <Button color="danger" onClick={handleAccountDeletion} style={{width:'40%'}}>
@@ -295,6 +330,100 @@ const MyPage = () => {
                             disabled={!changeMemberInfo} // 비밀번호 검증 전에는 비활성화
                             onChange={handleInputChange(setPhone)}
                           />
+                        </FormGroup>
+                      </Col>
+                      <Col lg="6">
+                        <FormGroup>
+                          <label className="form-control-label" htmlFor="input-phone">
+                            성별
+                          </label>
+                          { sex=="female" && (  
+                            <Input
+                              className="form-control-alternative"
+                              defaultValue="여성"
+                              id="sex"
+                              type="text"
+                              disabled={true}
+                            />
+                          ) }
+                          { sex=="male" && (  
+                            <Input
+                              className="form-control-alternative"
+                              defaultValue="남성"
+                              id="sex"
+                              type="text"
+                              disabled={true}
+                            />
+                          ) }
+                          { sex=="" && (  
+                              <select className={styles.sex_selectbox} disabled={!changeMemberInfo} value={sex} onChange={handleSelectChange}>
+                                <option value="" selected>선택하세요</option>
+                                <option value="female">여성</option>
+                                <option value="male">남성</option>
+                              </select>
+                          ) }
+                        </FormGroup>
+                      </Col>
+
+
+                      {/* 생년월일 */}
+                      <Col lg="6">
+                        <FormGroup>
+                          <label className="form-control-label" htmlFor="input-phone">
+                            생일
+                          </label>
+                          { birth==="" ? (
+                              <Datepicker  selectedDate={birth} onDateChange={setBirth}/>
+                            )
+                            :(
+                              <Input
+                                className="form-control-alternative"
+                                defaultValue={birth}
+                                id="birth"
+                                type="text"
+                                disabled={true}
+                              />
+                          )}
+                        </FormGroup>
+                      </Col>
+
+                      
+                      {/* 가구원 수 */}
+                      <Col lg="6">
+                        <FormGroup>
+                          <label className="form-control-label" htmlFor="input-phone">
+                            가구원 수 
+                          </label>
+                          <Input
+                            className="form-control-alternative"
+                            defaultValue={household}
+                            id="household"
+                            type="number"
+                            disabled={!changeMemberInfo}
+                          />
+                        </FormGroup>
+                      </Col>
+
+                      
+                      {/* 이메일 알림 설정 동의 */}
+                      <Col lg="6">
+                        <FormGroup>
+                          <label className="form-control-label" htmlFor="input-phone">
+                            이메일 알림 동의
+                          </label>
+                          <div className="custom-control custom-checkbox mb-3" style={{marginTop:'10px'}}>
+                            <input
+                              className="custom-control-input"
+                              id="customCheck1"
+                              type="checkbox"
+                              onChange={handleCheckBoxChange}
+                              disabled={!changeMemberInfo}
+                              checked={notice}
+                            />
+                            <label className="custom-control-label" htmlFor="customCheck1">
+                              수신 동의
+                            </label>
+                          </div>
                         </FormGroup>
                       </Col>
                     </Row>

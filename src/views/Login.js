@@ -1,10 +1,17 @@
 // src/views/examples/Login.jsx
-import React from 'react';
+import React, { useState } from 'react';
 import { Button, Card, CardHeader, CardBody, FormGroup, Form, Input, InputGroupAddon, InputGroupText, InputGroup, Row, Col } from 'reactstrap';
 import { useNavigate } from 'react-router-dom';
+import postLogin from 'apis/member/postLogin';
+import { useRecoilState } from 'recoil';
+import { accessTokenState } from 'states/accessTokenAtom';
 
 const Login = () => {
   const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [pw, setPw] = useState("");
+
+  const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
 
   // "Forgot id?" 클릭 핸들러 함수
   const handleFindId = () => {
@@ -16,13 +23,25 @@ const Login = () => {
     navigate('/auth/findpw');
   };
 
+  // 로그인 수행
+  const handleClickeLoginBtn = () => {
+    const data = {
+      "email":email,
+      "password":pw
+    }
+    postLogin(data).then(res=>{
+      setAccessToken(res.data.access_token)
+      navigate('/admin/index')
+    }).catch(err=>alert(err))
+  }
+
   return (
     <>
       <Col lg="5" md="7">
         <Card className="bg-secondary shadow border-0">
-          <CardHeader className="bg-transparent pb-5">
+          <CardHeader className="bg-transparent pb-1">
             <div className="text-center mt-2 mb-3">
-              <small>로그인하시겠습니까?</small>
+              <big>로그인 하시겠습니까?</big>
             </div>
           </CardHeader>
           <CardBody className="px-lg-5 py-lg-5">
@@ -35,9 +54,11 @@ const Login = () => {
                     </InputGroupText>
                   </InputGroupAddon>
                   <Input
-                    placeholder="Email"
+                    placeholder="이메일"
                     type="email"
                     autoComplete="new-email"
+                    value={email}
+                    onChange={e=>setEmail(e.target.value)}
                   />
                 </InputGroup>
               </FormGroup>
@@ -49,28 +70,17 @@ const Login = () => {
                     </InputGroupText>
                   </InputGroupAddon>
                   <Input
-                    placeholder="Password"
+                    placeholder="비밀번호"
                     type="password"
                     autoComplete="new-password"
+                    value={pw}
+                    onChange={e=>setPw(e.target.value)}
                   />
                 </InputGroup>
               </FormGroup>
-              <div className="custom-control custom-control-alternative custom-checkbox">
-                <input
-                  className="custom-control-input"
-                  id="customCheckLogin"
-                  type="checkbox"
-                />
-                <label
-                  className="custom-control-label"
-                  htmlFor="customCheckLogin"
-                >
-                  <span className="text-muted">Remember me</span>
-                </label>
-              </div>
               <div className="text-center">
-                <Button className="my-4" color="primary" type="button">
-                  Login
+                <Button className="my-4" color="primary" type="button" onClick={handleClickeLoginBtn}>
+                  로그인
                 </Button>
               </div>
             </Form>
@@ -86,7 +96,7 @@ const Login = () => {
                 handleFindPw(); // 클릭 시 handleFindPw 함수 호출
               }}
             >
-              <small>Forgot password?</small>
+              <small>비밀번호를 까먹었나요?</small>
             </a>
           </Col>
           <Col className="text-right" xs="6">
@@ -98,7 +108,7 @@ const Login = () => {
                 handleFindId(); // 클릭 시 handleFindId 함수 호출
               }}
             >
-              <small>Forgot id?</small>
+              <small>ID를 까먹었나요?</small>
             </a>
           </Col>
         </Row>
