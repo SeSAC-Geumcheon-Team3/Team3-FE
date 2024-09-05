@@ -28,8 +28,6 @@ export const basicApiInstance = () =>{
 
   return instance;
 
-}
-
 export const fileApiInstance = (accessToken) => {
   
   const instance = axios.create({
