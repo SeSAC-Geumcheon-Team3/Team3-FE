@@ -30,9 +30,13 @@ import {
   Row,
   Col,
 } from "reactstrap";
+import { getCookie } from "utils/cookie";
+import getAuth from "apis/getAuth";
+import { setCookie } from "utils/cookie";
 
 const Sidebar = (props) => {
   const [collapseOpen, setCollapseOpen] = useState(false);
+  const [auth, setAuth] = useState(false)
 
   /**
    * routeName이 현재 경로와 일치하는지 확인하여 활성 상태를 반환합니다.
@@ -105,6 +109,17 @@ const Sidebar = (props) => {
       ? { to: logo.innerLink, tag: Link }
       : { href: logo.outterLink, target: "_blank" };
   }
+
+  const fetchAuth = async() => {
+    return await getAuth();
+  }
+
+  useState(()=>{
+    fetchAuth().then(res=>{
+      setCookie('admin', res.data.admin);
+      setAuth(res.data.admin)
+    })
+  }, [])
 
   return (
     <Navbar className="navbar-vertical fixed-left navbar-light bg-white" expand="md" id="sidenav-main">
@@ -216,7 +231,7 @@ const Sidebar = (props) => {
           </Form>
 
           <Nav navbar>{createLinks(routes)}</Nav>
-          <Nav navbar>{createAdminLink(routes)}</Nav>
+          {auth && (<Nav navbar>{createAdminLink(routes)}</Nav>)}
 
           <Nav className="mb-md-3" navbar>
             <NavItem />
