@@ -1,6 +1,7 @@
 import { apiInstance } from "..";
 
 export default async function postSignup(userData, success, fail) {
+    
     const api = apiInstance(); // API 인스턴스 생성
     try {
 

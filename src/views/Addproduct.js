@@ -11,9 +11,8 @@ import {
   Col,
 } from 'reactstrap';
 import styles from './Addproduct.styles.css';
-import { useRecoilValue } from 'recoil';
-import { accessTokenState } from 'states/accessTokenAtom';
 import addProduct from 'apis/product/addProduct';
+import { useNavigate } from 'react-router-dom';
 
 const AddProduct = () => {
   const [productName, setProductName] = useState('');
@@ -23,7 +22,7 @@ const AddProduct = () => {
   const [purchaseDate, setPurchaseDate] = useState('');
   const [message, setMessage] = useState('');
 
-  const accessToken = useRecoilValue(accessTokenState);
+  const navigate = useNavigate();
 
   const handleInputChange = (setter) => (e) => setter(e.target.value);
 
@@ -39,7 +38,7 @@ const AddProduct = () => {
       update_date: purchaseDate,
     };
 
-    addProduct(data, accessToken,
+    addProduct(data,
       (response) => {
         setMessage(response.data.message);
         setProductName('');
@@ -47,6 +46,8 @@ const AddProduct = () => {
         setAlertQuantity('');
         setCategory('');
         setPurchaseDate('');
+
+        navigate('/product/dashboard');
       },
       (error) => {
         setMessage('상품 추가에 실패했습니다.');

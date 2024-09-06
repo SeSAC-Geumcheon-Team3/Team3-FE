@@ -13,8 +13,6 @@ const FindPw = () => {
   
   const setPwChangeAuth = useSetRecoilState(pwResetAuthState);
 
-  const onClickSignUp = () => {navigate('/auth/signup')}
-
   /**
    * 비밀번호 찾기
    */
@@ -29,7 +27,7 @@ const FindPw = () => {
     getAuthByMemberInfo(data).then(res=>{
 
       setPwChangeAuth(res.data.access_token)
-      navigate('/admin/password');
+      navigate('/member/password');
 
     }).catch(err=>alert(err))
   };
@@ -101,12 +99,12 @@ const FindPw = () => {
       </Card>
       <Row className="mt-4">
         <Col className="text-center">
-          <Button className="my-2" color="link" onClick={navigate('/auth/login')}>
+          <Button className="my-2" color="link" onClick={()=>navigate('/auth/signin')}>
             로그인 하러 가기
           </Button>
         </Col>
         <Col className="text-center">
-          <Button className="my-2" color="link" onClick={onClickSignUp}>
+          <Button className="my-2" color="link" onClick={()=>navigate('/auth/signup')}>
             회원가입 하러 가기
           </Button>
         </Col>

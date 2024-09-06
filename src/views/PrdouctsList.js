@@ -3,8 +3,6 @@ import { Button, Card, CardHeader, CardBody, Table, Container, Row, Col, Input, 
 import { FaEdit, FaPlusCircle, FaSave } from "react-icons/fa";
 import Header from "components/Headers/Header.js";
 import "./ProductList.css";
-import { useRecoilValue } from "recoil";
-import { accessTokenState } from "states/accessTokenAtom";
 import getProductList from "apis/product/getProductList";
 import { useNavigate } from "react-router-dom";
 import putProductList from "apis/product/putProductList";
@@ -18,7 +16,6 @@ const ProductList = (props) => {
   const [products, setProducts] = useState([]);                 // 물품 정보 저장
   const [totalProductsCnt, setTotalProductsCnt] = useState(0);  // 물품 전체 개수 저장
   const [filteredProducts, setFilteredProducts] = useState([]); // 화면에 보일 물품 정보
-  const accessToken = useRecoilValue(accessTokenState);
 
   const [searchText, setSearchText] = useState('');             // 검색어
   const [selectedCategory, setSelectedCategory] = useState(''); // 카테고리 선택자
@@ -70,15 +67,15 @@ const ProductList = (props) => {
   /** 변경사항 저장 버튼 클릭 */
   const onClickSaveBtn = () => {
     const data = products.map(({idx,category,stock,limit})=>({idx,category,stock,limit}))
-    putProductList(accessToken, {"data":data}).then(res=>{
-      getProductList(accessToken).then(res=>setProducts(res.data.items))
+    putProductList({"data":data}).then(()=>{
+      getProductList().then(res=>setProducts(res.data.items))
       setIsEditing(false);
     })
   }
 
   // product 데이터 받아오기
   const fetchData = async() => {
-    return await getProductList(accessToken)
+    return await getProductList()
   }
 
   useEffect(()=>{
@@ -138,7 +135,7 @@ const ProductList = (props) => {
                 <Button
                   color="primary"
                   size="sm"
-                  onClick={()=>navigate('/admin/add-product')}
+                  onClick={()=>navigate('/product/add-product')}
                   id='add-prod-btn'
                 >
                   <FaPlusCircle size={16} />

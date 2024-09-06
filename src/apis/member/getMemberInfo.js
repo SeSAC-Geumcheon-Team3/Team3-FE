@@ -1,6 +1,6 @@
 import { apiInstance } from "..";
 
-export default async function getMemberInfo(accessToken, success, fail){
-    const api = apiInstance(accessToken);
+export default async function getMemberInfo(success, fail){
+    const api = apiInstance();
     return await api.get("/mypage").then(success).catch(fail);
 }

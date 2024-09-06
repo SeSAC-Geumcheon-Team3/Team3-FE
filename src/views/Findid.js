@@ -143,7 +143,7 @@ const FindId = () => {
           {modalContent}
         </ModalBody>
         <ModalFooter>
-          <Button color="primary" onClick={navigate('/auth/login')}>확인</Button>
+          <Button color="primary" onClick={navigate('/auth/signin')}>확인</Button>
         </ModalFooter>
       </Modal>
     </Col>

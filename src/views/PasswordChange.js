@@ -15,7 +15,7 @@ import Header from "components/Headers/Header.js";
 import { useRecoilValue, useResetRecoilState } from 'recoil';
 import { pwResetAuthState } from 'states/pwResetAuthAtom';
 import putPassword from 'apis/member/putPassword';
-import { accessTokenState } from 'states/accessTokenAtom';
+import { removeCookie } from 'utils/cookie';
 
 export default function PasswordChange(){
 
@@ -23,7 +23,6 @@ export default function PasswordChange(){
     const [confirmPW, setConfirmPW] = useState("");     // 새 비밀번호 확인
     const pwResetAuth = useRecoilValue(pwResetAuthState);
     const resetPwResetAuth = useResetRecoilState(pwResetAuthState);
-    const resetAccessToken = useResetRecoilState(accessTokenState);
     
     const handleNewPW = e => setNewPW(e.target.value);
     const handleConfirmPW = e => setConfirmPW(e.target.value)
@@ -37,7 +36,7 @@ export default function PasswordChange(){
             putPassword(pwResetAuth, newPW).then(res=>{
                 alert(res.data.message);
                 resetPwResetAuth();
-                resetAccessToken();
+                removeCookie('accessToken')
                 window.location.href="/auth/login"
             }).catch(err=>alert(err))
         :

@@ -1,6 +1,6 @@
 import { apiInstance } from "..";
 
-export default async function getProductList(accessToken, success, fail) {
-    const api = apiInstance(accessToken);
+export default async function getProductList(success, fail) {
+    const api = apiInstance();
     return await api.get("/product").then(success).catch(fail);
 }
