@@ -1,4 +1,4 @@
-import { setCookie, getCookie } from "utils/cookie";
+import { setCookie } from "utils/cookie";
 import { basicApiInstance } from "..";
 
 const api = basicApiInstance();

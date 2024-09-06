@@ -3,15 +3,11 @@ import React, { useState } from 'react';
 import { Button, Card, CardHeader, CardBody, FormGroup, Form, Input, InputGroupAddon, InputGroupText, InputGroup, Row, Col } from 'reactstrap';
 import { useNavigate } from 'react-router-dom';
 import postLogin from 'apis/member/postLogin';
-import { useRecoilState } from 'recoil';
-import { accessTokenState } from 'states/accessTokenAtom';
 
 const Login = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [pw, setPw] = useState("");
-
-  const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
 
   // "Forgot id?" 클릭 핸들러 함수
   const handleFindId = () => {

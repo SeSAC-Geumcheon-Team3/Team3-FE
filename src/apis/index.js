@@ -3,7 +3,7 @@ import { interceptors } from "./setupInterceptor";
 
 const base_URL = "http://localhost:8000";
 
-export const apiInstance = (accessToken) =>{
+export const apiInstance = () =>{
   
   const instance = axios.create({
     baseURL: base_URL,
@@ -12,7 +12,7 @@ export const apiInstance = (accessToken) =>{
     },
   });
 
-  interceptors(instance, accessToken)
+  interceptors(instance)
 
   return instance;
 };

@@ -1,7 +1,8 @@
 import { apiInstance } from "..";
 
-export default function deleteMember(memberIdx, accessToken, success, fail) {
-    const api = apiInstance(accessToken);
+export default function deleteMember(memberIdx, success, fail) {
+    const api = apiInstance();
+    
     api.delete(`/admin/member?member_idx=${memberIdx}`)
        .then(response => {
            if (response.data && response.data.message) {

@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Card, CardBody, Button, Table, ListGroup, ListGroupItem, Pagination, PaginationItem, PaginationLink } from 'reactstrap';
 import styles from './Admindetail.styles.css';
-import { useRecoilValue } from 'recoil';
-import { accessTokenState } from 'states/accessTokenAtom';
 import getMemberList from 'apis/admin/getMemberList';
 import deleteMember from 'apis/admin/deleteMember';
 
@@ -14,10 +12,8 @@ const AdminDetail = () => {
   const [membersPerPage] = useState(6); // 페이지 당 회원 수
   const [message, setMessage] = useState('');
 
-  const accessToken = useRecoilValue(accessTokenState);
-
   const fetchMembers = (page) => {
-    getMemberList(page, membersPerPage, accessToken,
+    getMemberList(page, membersPerPage, 
       (response) => {
         setMembers(response.data.items || []);
         setTotalPages(response.data.total_pages || 1);
@@ -36,7 +32,7 @@ const AdminDetail = () => {
 
   const handleDeleteMember = (member) => {
     if (window.confirm(`${member.name}님을 강제 탈퇴하시겠습니까?`)) {
-      deleteMember(member.member_idx, accessToken,
+      deleteMember(member.member_idx, 
         (response) => {
           alert(response.message);
           fetchMembers(currentPage);

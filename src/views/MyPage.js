@@ -13,15 +13,11 @@ import {
   Modal,
   ModalHeader,
   ModalBody,
-  ModalFooter,
-  InputGroupAddon,
-  InputGroupText,
-  InputGroup
+  ModalFooter
 } from 'reactstrap';
 import UserHeader from 'components/Headers/UserHeader.js';
 import { useNavigate } from 'react-router-dom'; // useNavigate로 변경
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { accessTokenState } from 'states/accessTokenAtom';
+import { useSetRecoilState } from 'recoil';
 import styles from './MyPage.module.css'
 import putMemberInfo from 'apis/member/putMemberInfo';
 import getAuthByPW from 'apis/member/getAuthByPW';
@@ -34,10 +30,8 @@ import getProfile from 'apis/member/getProfile';
 const MyPage = () => {
   const [modalOpen, setModalOpen] = useState(false);      // 비밀번호 확인 모달
   const [inputPassword, setInputPassword] = useState(""); // 사용자 인증 비밀번호
-
-  const accessToken = useRecoilValue(accessTokenState); // 토큰값
   
-  const [pwResetAuth, setPwResetAuth] = useRecoilState(pwResetAuthState); //비밀번호 재설정 권한용 토큰=
+  const setPwResetAuth = useSetRecoilState(pwResetAuthState); //비밀번호 재설정 권한용 토큰=
 
   const [changeMemberInfo, setChangeMemberInfo] = useState(false);  //사용자 정보 수정 상태(활성화:true, 비활성화:false)  
   const [profile, setProfile] = useState("");
@@ -75,7 +69,7 @@ const MyPage = () => {
    * 비밀번호 검증
    */
   const handlePasswordVerification = () => {
-    getAuthByPW(accessToken, inputPassword)
+    getAuthByPW(inputPassword)
       .then(res=>{
         // 비밀번호 검증 후 비밀번호 변경 모드 활성화
         setPwResetAuth(res.data.access_token)
@@ -100,26 +94,29 @@ const MyPage = () => {
     setNotice(!notice)
   }
 
-  //프로필 이미지 수정 버튼클릭
+  /**프로필 이미지 수정 버튼클릭 */
   const onClickProfileEditBtn = () =>{
     setProfileEdit(true);
     fileInputRef.current.click()
   }
-  // 파일 선택 핸들러
+
+  /** 파일 선택 핸들러*/
   const handleFileChange = (event) => {
     setProfile(URL.createObjectURL(event.target.files[0]))
     setSelectedFile(event.target.files[0]);
   };
-  // 파일 전송 버튼 클릭
+
+  /** 파일 전송 버튼 클릭*/ 
   const handlePostFileBtn = () => {
     const data = new FormData();
     data.append('profile_image',selectedFile);
-    postProfile(accessToken, data).then(res=>{
+    postProfile(data).then(res=>{
       alert(res.data.message);
       window.location.href='/admin/mypage';
     }).catch(err=>console.log(err))
   }
-  // 파일 다운로드 클릭 
+
+  /**파일 다운로드 클릭 */
   const onClickDownloadProfile = () => {
     if (!profile) {
       alert("다운로드할 파일이 없습니다.");
@@ -136,9 +133,7 @@ const MyPage = () => {
 
   }
 
-  /**
-   * 회원정보 수정 버튼 클릭
-   */
+  /** 회원정보 수정 버튼 클릭 */
   const onClickEditBtnHandler = () => {
     const data = {
       "name":name,
@@ -150,7 +145,7 @@ const MyPage = () => {
       "household":household,
       "notice":notice,
     }
-    putMemberInfo(accessToken, data).then(res=>{
+    putMemberInfo(data).then(res=>{
       // 1. 회원 정보 수정이 완료되었다는 메시지 띄우기
       alert(res.data.message);
 
@@ -165,11 +160,11 @@ const MyPage = () => {
    * @returns 
    */
   const fetchData = async () => {
-    return await getMemberInfo(accessToken)
+    return await getMemberInfo()
   }
 
   const fetchProfile = async () =>{
-    return await getProfile(accessToken)
+    return await getProfile()
   }
 
 

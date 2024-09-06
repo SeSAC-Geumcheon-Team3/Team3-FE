@@ -1,5 +1,7 @@
 import { apiInstance } from "..";
+
 export default async function postFindId(name, phone) {
+    
     const api = apiInstance();  // API 인스턴스 생성
 
     try {

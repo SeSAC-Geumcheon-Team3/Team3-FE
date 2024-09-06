@@ -11,8 +11,6 @@ import {
   Col,
 } from 'reactstrap';
 import styles from './Addproduct.styles.css';
-import { useRecoilValue } from 'recoil';
-import { accessTokenState } from 'states/accessTokenAtom';
 import addProduct from 'apis/product/addProduct';
 
 const AddProduct = () => {
@@ -22,8 +20,6 @@ const AddProduct = () => {
   const [category, setCategory] = useState('');
   const [purchaseDate, setPurchaseDate] = useState('');
   const [message, setMessage] = useState('');
-
-  const accessToken = useRecoilValue(accessTokenState);
 
   const handleInputChange = (setter) => (e) => setter(e.target.value);
 
@@ -39,7 +35,7 @@ const AddProduct = () => {
       update_date: purchaseDate,
     };
 
-    addProduct(data, accessToken,
+    addProduct(data,
       (response) => {
         setMessage(response.data.message);
         setProductName('');
