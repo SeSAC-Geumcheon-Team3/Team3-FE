@@ -71,9 +71,9 @@ const MyPage = () => {
   const handlePasswordVerification = () => {
     getAuthByPW(inputPassword)
       .then(res=>{
-        // 비밀번호 검증 후 비밀번호 변경 모드 활성화
+        // 비밀번호 검증 후 비밀번호 변경 페이지로 리디렉션
         setPwResetAuth(res.data.access_token)
-        navigate("/admin/password")
+        navigate("/member/password")
     })
       .catch(err=>{
         // 인증 실패
@@ -84,7 +84,7 @@ const MyPage = () => {
 
   // 회원 탈퇴 버튼 클릭 시 라우팅
   const handleAccountDeletion = () => {
-    navigate('/admin/account-deletion'); // 절대 경로를 사용하여 이동
+    navigate('/member/account-deletion'); // 절대 경로를 사용하여 이동
   };
 
   // 비밀번호 수정 버튼 클릭
@@ -112,7 +112,7 @@ const MyPage = () => {
     data.append('profile_image',selectedFile);
     postProfile(data).then(res=>{
       alert(res.data.message);
-      window.location.href='/admin/mypage';
+      window.location.reload();
     }).catch(err=>console.log(err))
   }
 
@@ -145,13 +145,11 @@ const MyPage = () => {
       "household":household,
       "notice":notice,
     }
+    
+    //회원 정보 수정 후  완료되었다는 메시지 popup
     putMemberInfo(data).then(res=>{
-      // 1. 회원 정보 수정이 완료되었다는 메시지 띄우기
       alert(res.data.message);
-
-      // 2. 원래 페이지로 새로고침 
-      navigate('/admin/mypage'); // 절대 경로를 사용하여 이동
-
+      window.location.reload();
     }).catch(err=>alert(err))
   }
 

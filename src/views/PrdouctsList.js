@@ -135,7 +135,7 @@ const ProductList = (props) => {
                 <Button
                   color="primary"
                   size="sm"
-                  onClick={()=>navigate('/admin/add-product')}
+                  onClick={()=>navigate('/product/add-product')}
                   id='add-prod-btn'
                 >
                   <FaPlusCircle size={16} />

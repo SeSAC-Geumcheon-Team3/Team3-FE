@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Button, Card, CardHeader, CardBody, FormGroup, Form, Row, Col, Input, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import { useNavigate } from 'react-router-dom';
 import deleteMember from 'apis/member/deleteMember';
+import { removeCookie } from 'utils/cookie';
 
 const AccountDeletion = () => {
   const [isChecked, setIsChecked] = useState(false); // Checkbox 상태 관리
@@ -23,7 +24,8 @@ const AccountDeletion = () => {
     deleteMember().then(res=>{
 
       alert("회원 탈퇴가 완료되었습니다.");
-      navigate('/'); // 홈 페이지로 리디렉션
+      removeCookie('accessToken');
+      navigate('/auth/signin'); // 홈 페이지로 리디렉션
 
     }).catch(setModalOpen(true))
 

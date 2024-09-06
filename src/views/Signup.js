@@ -227,7 +227,7 @@ const Signup = () => {
             <a
               className="text-light"
               href="#pablo"
-              onClick={navigate('/auth/signin')}
+              onClick={()=>navigate('/auth/signin')}
             >
               <small>계정이 있으신가요? &nbsp;로그인 하러 가기</small>
             </a>

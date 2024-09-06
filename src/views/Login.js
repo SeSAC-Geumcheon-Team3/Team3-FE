@@ -28,7 +28,7 @@ const Login = () => {
 
     // 로그인 성공 시 페이지 이동
     postLogin(data).then(()=>{
-      navigate('/admin/index')
+      navigate('/product/dashboard')
     }).catch(err=>alert(err))
   }
 
