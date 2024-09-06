@@ -1,6 +1,11 @@
+import { setCookie, getCookie } from "utils/cookie";
 import { basicApiInstance } from "..";
 
-export default async function postLogin(data, success, fail){
-    const api = basicApiInstance();
-    return await api.post("/signin",data).then(success).catch(fail);
+const api = basicApiInstance();
+
+export default async function postLogin(data){
+    await api.post("/signin",data)
+    .then(res=>{
+        setCookie('accessToken', res.data.access_token, {maxAge:3600});
+    });
 }

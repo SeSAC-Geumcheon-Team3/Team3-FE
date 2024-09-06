@@ -29,8 +29,9 @@ const Login = () => {
       "email":email,
       "password":pw
     }
-    postLogin(data).then(res=>{
-      setAccessToken(res.data.access_token)
+
+    // 로그인 성공 시 페이지 이동
+    postLogin(data).then(()=>{
       navigate('/admin/index')
     }).catch(err=>alert(err))
   }
