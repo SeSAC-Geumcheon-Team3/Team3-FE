@@ -1,26 +1,17 @@
 // src/routes.js
 import React from 'react';
-import Index from 'views/Index.js';
 import MyPage from 'views/MyPage';
 import Login from 'views/Login.js';
 import Signup from 'views/Signup';
-import Icons from 'views/examples/Icons.js';
 import FindId from 'views/Findid';
 import FindPw from 'views/Findpw';
-import AccountDeletion from 'views/examples/Accountdeletion'; // 경로 수정
+import AccountDeletion from 'views/Accountdeletion'; // 경로 수정
 import PasswordChange from 'views/PasswordChange';
-import ProductList from "pages/PrdouctsList";
+import ProductList from "views/PrdouctsList";
 import AddProduct from 'views/Addproduct';
 import AdminDetail from 'views/Admindetail';
 
 var routes = [
-  {
-    path: '/index',
-    name: 'Dashboard',
-    icon: 'ni ni-tv-2 text-primary',
-    component: <Index />,
-    layout: '/admin',
-  },
   {
     path: "/products",
     name: "생필품 목록 조회",

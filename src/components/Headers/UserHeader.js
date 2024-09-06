@@ -1,9 +1,6 @@
 // reactstrap components
-import { useRecoilValue } from "recoil";
-import { accessTokenState } from "states/accessTokenAtom";
 
 const UserHeader = () => {
-  const accessToken = useRecoilValue(accessTokenState)
   return (
     <>
       <div
