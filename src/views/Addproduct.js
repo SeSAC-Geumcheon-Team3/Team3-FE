@@ -12,6 +12,7 @@ import {
 } from 'reactstrap';
 import styles from './Addproduct.styles.css';
 import addProduct from 'apis/product/addProduct';
+import { useNavigate } from 'react-router-dom';
 
 const AddProduct = () => {
   const [productName, setProductName] = useState('');
@@ -20,6 +21,8 @@ const AddProduct = () => {
   const [category, setCategory] = useState('');
   const [purchaseDate, setPurchaseDate] = useState('');
   const [message, setMessage] = useState('');
+
+  const navigate = useNavigate();
 
   const handleInputChange = (setter) => (e) => setter(e.target.value);
 
@@ -43,6 +46,8 @@ const AddProduct = () => {
         setAlertQuantity('');
         setCategory('');
         setPurchaseDate('');
+
+        navigate('/product/dashboard');
       },
       (error) => {
         setMessage('상품 추가에 실패했습니다.');

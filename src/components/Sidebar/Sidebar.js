@@ -30,9 +30,7 @@ import {
   Row,
   Col,
 } from "reactstrap";
-import { getCookie } from "utils/cookie";
 import getAuth from "apis/getAuth";
-import { setCookie } from "utils/cookie";
 
 const Sidebar = (props) => {
   const [collapseOpen, setCollapseOpen] = useState(false);
@@ -116,7 +114,6 @@ const Sidebar = (props) => {
 
   useState(()=>{
     fetchAuth().then(res=>{
-      setCookie('admin', res.data.admin);
       setAuth(res.data.admin)
     })
   }, [])
