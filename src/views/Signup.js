@@ -79,7 +79,7 @@ const Signup = () => {
       },
       (response) => {
         alert('회원가입이 완료되었습니다! 로그인 페이지로 리디렉션합니다.');
-        navigate('/login'); // 로그인 페이지로 리디렉션
+        navigate('/auth/signin'); // 로그인 페이지로 리디렉션
       },
       (error) => {
         console.error('회원가입 오류:', error);
@@ -227,7 +227,7 @@ const Signup = () => {
             <a
               className="text-light"
               href="#pablo"
-              onClick={navigate('/auth/login')}
+              onClick={navigate('/auth/signin')}
             >
               <small>계정이 있으신가요? &nbsp;로그인 하러 가기</small>
             </a>

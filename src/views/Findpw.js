@@ -29,7 +29,7 @@ const FindPw = () => {
     getAuthByMemberInfo(data).then(res=>{
 
       setPwChangeAuth(res.data.access_token)
-      navigate('/admin/password');
+      navigate('/member/password');
 
     }).catch(err=>alert(err))
   };
@@ -101,7 +101,7 @@ const FindPw = () => {
       </Card>
       <Row className="mt-4">
         <Col className="text-center">
-          <Button className="my-2" color="link" onClick={navigate('/auth/login')}>
+          <Button className="my-2" color="link" onClick={navigate('/auth/signin')}>
             로그인 하러 가기
           </Button>
         </Col>
