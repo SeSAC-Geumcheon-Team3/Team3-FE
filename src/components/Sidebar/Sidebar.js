@@ -63,7 +63,27 @@ const Sidebar = (props) => {
    * @returns {Array} - NavItem 배열
    */
   const createLinks = (routes) => {
-    return routes.map((prop, key) => (
+    return routes.slice(0,2).map((prop, key) => (
+      <NavItem key={key}>
+        <NavLink
+          to={prop.layout + prop.path}
+          tag={NavLinkRRD}
+          onClick={closeCollapse}
+        >
+          <i className={prop.icon} />
+          {prop.name}
+        </NavLink>
+      </NavItem>
+    ));
+  };
+
+    /**
+   * 관리자 모드에서 표시될 링크를 생성합니다.
+   * @param {Array} routes - 경로 배열
+   * @returns {Array} - NavItem 배열
+   */
+  const createAdminLink = (routes) => {
+    return routes.slice(2,3).map((prop, key) => (
       <NavItem key={key}>
         <NavLink
           to={prop.layout + prop.path}
@@ -97,7 +117,7 @@ const Sidebar = (props) => {
         {/* Brand */}
         {logo && (
           <NavbarBrand className="pt-0" {...navbarBrandProps}>
-            <img alt={logo.imgAlt} className="navbar-brand-img" src={logo.imgSrc} />
+            <img alt={logo.imgAlt} className="navbar-brand-img" src={logo.imgSrc} style={{minWidth:'100px', minHeight:'100px'}}/>
           </NavbarBrand>
         )}
 
@@ -196,19 +216,12 @@ const Sidebar = (props) => {
           </Form>
 
           <Nav navbar>{createLinks(routes)}</Nav>
+          <Nav navbar>{createAdminLink(routes)}</Nav>
 
           <Nav className="mb-md-3" navbar>
             <NavItem />
           </Nav>
 
-          <Nav className="mb-md-3" navbar>
-            <NavItem className="active-pro active">
-              <NavLink href="https://www.creative-tim.com/product/argon-dashboard-pro-react?ref=adr-admin-sidebar">
-                <i className="ni ni-spaceship" />
-                Upgrade to PRO
-              </NavLink>
-            </NavItem>
-          </Nav>
         </Collapse>
       </Container>
     </Navbar>

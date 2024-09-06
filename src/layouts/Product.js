@@ -66,8 +66,8 @@ const Product = (props) => {
         {...props}
         routes={routes}
         logo={{
-          innerLink: "/admin/index",
-          imgSrc: require("../assets/img/brand/argon-react.png"),
+          innerLink: "/product/dashboard",
+          imgSrc: require("../assets/img/logo.png"),
           imgAlt: "...",
         }}
       />

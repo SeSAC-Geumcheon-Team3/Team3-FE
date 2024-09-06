@@ -26,6 +26,7 @@ import { pwResetAuthState } from 'states/pwResetAuthAtom';
 import Datepicker from 'components/Members/Datepicker';
 import postProfile from 'apis/member/postProfile';
 import getProfile from 'apis/member/getProfile';
+import Header from 'components/Headers/Header';
 
 const MyPage = () => {
   const [modalOpen, setModalOpen] = useState(false);      // 비밀번호 확인 모달
@@ -190,7 +191,7 @@ const MyPage = () => {
 
   return (
     <>
-      <UserHeader />
+      <Header />
       {/* Page content */}
       <Container className="mt--7" fluid>
         <Row>

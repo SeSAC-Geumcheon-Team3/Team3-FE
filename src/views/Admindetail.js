@@ -3,6 +3,8 @@ import { Container, Row, Col, Card, CardBody, Button, Table, ListGroup, ListGrou
 import styles from './Admindetail.styles.css';
 import getMemberList from 'apis/admin/getMemberList';
 import deleteMember from 'apis/admin/deleteMember';
+import Header from 'components/Headers/Header';
+import UserHeader from 'components/Headers/UserHeader';
 
 const AdminDetail = () => {
   const [selectedMember, setSelectedMember] = useState(null);
@@ -55,6 +57,8 @@ const AdminDetail = () => {
   };
 
   return (
+    <>
+    <UserHeader/>
     <Container fluid className={styles.container}>
       <Row className="mb-4">
         <Col lg="3" md="6">
@@ -94,7 +98,7 @@ const AdminDetail = () => {
       <Row>
         <Col lg="4" md="12">
           <Card className="shadow">
-            <CardBody>
+            <CardBody style={{}}>
               <h2>사용자 목록</h2>
               <Table hover className={styles.table}>
                 <thead>
@@ -181,6 +185,7 @@ const AdminDetail = () => {
         </Col>
       </Row>
     </Container>
+    </>
   );
 };
 

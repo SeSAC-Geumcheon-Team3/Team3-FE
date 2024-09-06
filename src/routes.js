@@ -20,17 +20,24 @@ var routes = [
     layout: "/product",
   },
   {
-    path:'/password',
-    name:'비밀번호 재설정',
-    component:<PasswordChange/>,
-    layout:'/member'
-  },
-  {
     path: '/mypage',
     name: '마이 페이지',
     icon: 'ni ni-single-02 text-yellow',
     component: <MyPage />,
     layout: '/member',
+  },
+  {
+    path: '/admin-detail',
+    name: '관리자용 대시보드',
+    icon: 'ni ni-settings text-red',
+    component: <AdminDetail />,
+    layout: '/admin',
+  },
+  {
+    path:'/password',
+    name:'비밀번호 재설정',
+    component:<PasswordChange/>,
+    layout:'/member'
   },
   {
     path: '/signup',
@@ -73,13 +80,6 @@ var routes = [
     icon: 'ni ni-circle-08 text-pink',
     component: <AddProduct />,
     layout: '/product',
-  },
-  {
-    path: '/admin-detail',
-    name: 'Admin Detail',
-    icon: 'ni ni-fat-remove text-red',
-    component: <AdminDetail />,
-    layout: '/admin',
   },
 ];
 
