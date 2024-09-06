@@ -13,24 +13,24 @@ import AdminDetail from 'views/Admindetail';
 
 var routes = [
   {
-    path: "/products",
+    path: "/dashboard",
     name: "생필품 목록 조회",
     icon: "ni ni-tv-2 text-primary",
     component: <ProductList />,
-    layout: "/admin",
+    layout: "/product",
   },
   {
     path:'/password',
     name:'비밀번호 재설정',
     component:<PasswordChange/>,
-    layout:'/admin'
+    layout:'/member'
   },
   {
     path: '/mypage',
     name: '마이 페이지',
     icon: 'ni ni-single-02 text-yellow',
     component: <MyPage />,
-    layout: '/admin',
+    layout: '/member',
   },
   {
     path: '/signup',
@@ -40,7 +40,7 @@ var routes = [
     layout: '/auth',
   },
   {
-    path: '/login',
+    path: '/signin',
     name: '로그인',
     icon: 'ni ni-key-25 text-info',
     component: <Login />,
@@ -65,14 +65,14 @@ var routes = [
     name: '계정 삭제',
     icon: 'ni ni-fat-remove text-red',
     component: <AccountDeletion />,
-    layout: '/admin',
+    layout: '/member',
   },
   {
     path: '/add-product',
     name: '생필품 추가',
     icon: 'ni ni-circle-08 text-pink',
     component: <AddProduct />,
-    layout: '/admin',
+    layout: '/product',
   },
   {
     path: '/admin-detail',
