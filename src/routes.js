@@ -10,6 +10,7 @@ import PasswordChange from 'views/PasswordChange';
 import ProductList from "views/PrdouctsList";
 import AddProduct from 'views/Addproduct';
 import AdminDetail from 'views/Admindetail';
+import Signout from 'views/Signout';
 
 var routes = [
   {
@@ -22,8 +23,15 @@ var routes = [
   {
     path: '/mypage',
     name: '마이 페이지',
-    icon: 'ni ni-single-02 text-yellow',
+    icon: 'ni ni-single-02 text-primary',
     component: <MyPage />,
+    layout: '/member',
+  },
+  {
+    path: '/logout',
+    name: '로그아웃',
+    icon: 'ni ni-button-power text-primary',
+    component: <Signout />,
     layout: '/member',
   },
   {

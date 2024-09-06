@@ -65,7 +65,7 @@ const Sidebar = (props) => {
    * @returns {Array} - NavItem 배열
    */
   const createLinks = (routes) => {
-    return routes.slice(0,2).map((prop, key) => (
+    return routes.slice(0,3).map((prop, key) => (
       <NavItem key={key}>
         <NavLink
           to={prop.layout + prop.path}
@@ -85,7 +85,7 @@ const Sidebar = (props) => {
    * @returns {Array} - NavItem 배열
    */
   const createAdminLink = (routes) => {
-    return routes.slice(2,3).map((prop, key) => (
+    return routes.slice(3,4).map((prop, key) => (
       <NavItem key={key}>
         <NavLink
           to={prop.layout + prop.path}
