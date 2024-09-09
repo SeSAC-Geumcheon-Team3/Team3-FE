@@ -12,17 +12,16 @@ import {
     Col
 } from 'reactstrap';
 import Header from "components/Headers/Header.js";
-import { useRecoilValue, useResetRecoilState } from 'recoil';
 import { pwResetAuthState } from 'states/pwResetAuthAtom';
 import putPassword from 'apis/member/putPassword';
 import { removeCookie } from 'utils/cookie';
+import { getCookie } from 'utils/cookie';
 
 export default function PasswordChange(){
 
     const [newPW, setNewPW] = useState("");     // 새 비밀번호
     const [confirmPW, setConfirmPW] = useState("");     // 새 비밀번호 확인
-    const pwResetAuth = useRecoilValue(pwResetAuthState);
-    const resetPwResetAuth = useResetRecoilState(pwResetAuthState);
+    const pwResetAuth = getCookie('pwResetAuth');
     
     const handleNewPW = e => setNewPW(e.target.value);
     const handleConfirmPW = e => setConfirmPW(e.target.value)
@@ -35,9 +34,10 @@ export default function PasswordChange(){
         newPW===newPW?
             putPassword(pwResetAuth, newPW).then(res=>{
                 alert(res.data.message);
-                resetPwResetAuth();
-                removeCookie('accessToken')
-                window.location.href="/auth/login"
+                removeCookie('accessToken');
+                removeCookie('pwResetAuth');
+                removeCookie('auth');
+                window.location.href="/auth/signin"
             }).catch(err=>alert(err))
         :
             alert("비밀번호가 일치하지 않습니다")

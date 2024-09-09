@@ -13,6 +13,7 @@ import {
 import styles from './Addproduct.styles.css';
 import addProduct from 'apis/product/addProduct';
 import { useNavigate } from 'react-router-dom';
+import Header from 'components/Headers/Header';
 
 const AddProduct = () => {
   const [productName, setProductName] = useState('');
@@ -21,6 +22,7 @@ const AddProduct = () => {
   const [category, setCategory] = useState('');
   const [purchaseDate, setPurchaseDate] = useState('');
   const [message, setMessage] = useState('');
+  const categories = ['생필품', '전자제품', '식료품', '가전제품', '선택 안함']; // 옵션 목록
 
   const navigate = useNavigate();
 
@@ -57,9 +59,8 @@ const AddProduct = () => {
 
   return (
     <>
-      <h2 className={styles.title}>생필품 추가</h2>
-
-      <Container fluid className={styles.container}>
+      <Header />
+      <Container className="mt--7" fluid>
         <Row className="justify-content-center">
           <Col lg="12" md="6">
             <Card className="shadow">
@@ -103,17 +104,10 @@ const AddProduct = () => {
                       value={category}
                       onChange={handleInputChange(setCategory)}
                     >
-                      <option value="식료품 및 음료">식료품 및 음료</option>
-                      <option value="주방 및 조리 용품">주방 및 조리 용품</option>
-                      <option value="의류 및 세탁 용품">의류 및 세탁 용품</option>
-                      <option value="위생 및 청결 용품">위생 및 청결 용품</option>
-                      <option value="가구 및 가정용품">가구 및 가정용품</option>
-                      <option value="건강 및 응급 용품">건강 및 응급 용품</option>
-                      <option value="개인 관리 용품">개인 관리 용품</option>
-                      <option value="유아 및 육아용품">유아 및 육아용품</option>
-                      <option value="반려동물 용품">반려동물 용품</option>
-                      <option value="일회용품 및 소비재">일회용품 및 소비재</option>
-                      <option value="전기/전자 기기 및 액세서리">전기/전자 기기 및 액세서리</option>
+                      <option value="" disabled selected>카테고리를 선택하세요</option>
+                      {categories.map((cate, idx)=>(
+                        <option key={idx} value={cate}>{cate}</option>
+                      ))}
                     </Input>
                   </FormGroup>
                   <FormGroup>

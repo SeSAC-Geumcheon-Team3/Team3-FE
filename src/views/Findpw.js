@@ -4,14 +4,13 @@ import { useNavigate } from 'react-router-dom';
 import getAuthByMemberInfo from 'apis/member/getAuthByMemberInfo';
 import { useSetRecoilState } from 'recoil';
 import { pwResetAuthState } from 'states/pwResetAuthAtom';
+import { setCookie } from 'utils/cookie';
 
 const FindPw = () => {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const navigate = useNavigate();
-  
-  const setPwChangeAuth = useSetRecoilState(pwResetAuthState);
 
   /**
    * 비밀번호 찾기
@@ -26,7 +25,7 @@ const FindPw = () => {
 
     getAuthByMemberInfo(data).then(res=>{
 
-      setPwChangeAuth(res.data.access_token)
+      setCookie('pwResetAuth',res.data.access_token);
       navigate('/member/password');
 
     }).catch(err=>alert(err))

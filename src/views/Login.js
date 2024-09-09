@@ -84,7 +84,21 @@ const Login = () => {
           </CardBody>
         </Card>
         <Row className="mt-3">
-          <Col xs="6">
+          <Col xs="8">
+            <a
+                className="text-light"
+                href="#pablo"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate('/auth/signup'); // 클릭 시 handleFindId 함수 호출
+                }}
+              >
+              <small>계정이 없나요? 회원가입 하러 가기</small>
+            </a>
+          </Col>
+          <Col xs="2">
+          </Col>
+          <Col className="text-right" xs="2">
             <a
                 className="text-light"
                 href="#pablo"
@@ -93,10 +107,8 @@ const Login = () => {
                   handleFindId(); // 클릭 시 handleFindId 함수 호출
                 }}
               >
-              <small>ID를 까먹었나요?</small>
+              <small>ID 찾기</small>
             </a>
-          </Col>
-          <Col className="text-right" xs="6">
             <a
               className="text-light"
               href="#pablo"
@@ -105,7 +117,7 @@ const Login = () => {
                 handleFindPw(); // 클릭 시 handleFindPw 함수 호출
               }}
             >
-              <small>비밀번호를 까먹었나요?</small>
+              <small>PW 찾기</small>
             </a>
           </Col>
         </Row>

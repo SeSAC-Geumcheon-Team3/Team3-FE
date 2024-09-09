@@ -27,6 +27,7 @@ import Datepicker from 'components/Members/Datepicker';
 import postProfile from 'apis/member/postProfile';
 import getProfile from 'apis/member/getProfile';
 import Header from 'components/Headers/Header';
+import { setCookie } from 'utils/cookie';
 
 const MyPage = () => {
   const [modalOpen, setModalOpen] = useState(false);      // 비밀번호 확인 모달
@@ -73,7 +74,7 @@ const MyPage = () => {
     getAuthByPW(inputPassword)
       .then(res=>{
         // 비밀번호 검증 후 비밀번호 변경 페이지로 리디렉션
-        setPwResetAuth(res.data.access_token)
+        setCookie('pwResetAuth',res.data.access_token)
         navigate("/member/password")
     })
       .catch(err=>{
@@ -170,6 +171,11 @@ const MyPage = () => {
   // memberInfo에 변화가 생길 때 마다 페이지 새로고침
   useEffect(()=>{
     
+
+    fetchProfile().then(res=>{
+      setProfile(URL.createObjectURL(res.data))
+    })
+    
     fetchData().then(res=>{
       
       // 사용자 정보 state에 입력
@@ -182,10 +188,6 @@ const MyPage = () => {
       setHousehold(res.data.household);
       setNotice(res.data.notice);
     }).catch(err=> console.log(err))
-
-    fetchProfile().then(res=>{
-      setProfile(URL.createObjectURL(res.data))
-    })
 
   },[])
 

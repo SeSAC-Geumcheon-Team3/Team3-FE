@@ -37,3 +37,34 @@ export const interceptors = (apiInstance) => {
       }
   );
 };
+
+export const pw_interceptors = (apiInstance,accessToken) => {
+
+  // 요청 인터셉터
+  apiInstance.interceptors.request.use(
+    (config) => {
+      if (accessToken) {                                              // accessToken이 있다면 헤더에 accessToken 담기
+        config.headers.Authorization = `Bearer ${accessToken}`;     
+      }
+      return config;
+    },
+    (error) => {
+      Promise.reject(error)
+    }
+  );
+  
+  //  응답 인터셉터
+  apiInstance.interceptors.response.use(
+      (response) => {
+          return response;
+      },
+      (error) => {
+        // 인증 관련 에러 처리 (401, 403 등)
+        if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+          removeCookie('accessToken'); // 만료된 토큰을 제거
+          window.location.href='/auth/login'; // 로그인 페이지로 리다이렉트
+        }
+        return Promise.reject(error);
+      }
+  );
+};

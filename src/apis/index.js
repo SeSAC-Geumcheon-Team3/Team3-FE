@@ -1,5 +1,5 @@
 import axios from "axios";
-import { interceptors } from "./setupInterceptor";
+import { interceptors, pw_interceptors } from "./setupInterceptor";
 
 const base_URL = "http://localhost:8000";
 
@@ -55,6 +55,20 @@ export const fileReqApiInstance = (accessToken) => {
   });
 
   interceptors(instance, accessToken)
+
+  return instance;
+};
+
+export const pwApiInstance = (accessToken) =>{
+  
+  const instance = axios.create({
+    baseURL: base_URL,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  pw_interceptors(instance,accessToken)
 
   return instance;
 };
